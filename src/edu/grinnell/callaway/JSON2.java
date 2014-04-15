@@ -41,10 +41,20 @@ public class JSON2
               break;
             // string
             case '\\':
-              result = null;
+              int next = str.read();
+              if (next == '"')
+                {
+                result = parseString(str);
+                }
+              else
+                {
+                  throw new Exception("Invalid character " + next);
+                }
               break;
             // true
             case 't':
+              ;
+              //= str.read(cbuf)
               result = null;
               break;
             // false
@@ -55,7 +65,7 @@ public class JSON2
             case 'n':
               result = null;
               break;
-            // otherwise number or error
+            // number
             case '0':
             case '1':
             case '2':
@@ -68,6 +78,7 @@ public class JSON2
             case '9':
 
               break;
+            // otherwise error
             default:
 
               throw new Exception("");
