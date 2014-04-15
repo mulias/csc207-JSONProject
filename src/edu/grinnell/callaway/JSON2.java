@@ -134,6 +134,7 @@ public class JSON2
                 {
                   throw new Exception("");
                 }
+<<<<<<< HEAD
                               int next = str.read();
               if (next == '"')
                 {
@@ -145,4 +146,38 @@ public class JSON2
                 }
    */
 
+  public Object parseArray(BufferedReader str)
+    throws Exception
+  {
+    Vector<Object> array = new Vector<Object>();
+
+    int c;
+    str.mark(1);
+    c = str.read();
+    if (c == ',')
+      {
+        throw new Exception("array can not start with ','");
+      }
+    while (c != ']')
+      {
+        switch (c)
+          {
+          // ignore whitespace chars
+            case ',':
+            case ' ':
+            case '\n':
+            case '\t':
+            case '\r':
+            case '\b':
+            case '\f':
+              break;
+            default:
+              str.reset();
+              array.add(parse(str));
+          }
+        str.mark(1);
+        c = str.read();
+      }
+    return array;
+  }
 }
