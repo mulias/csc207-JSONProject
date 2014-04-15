@@ -2,6 +2,7 @@ package edu.grinnell.callaway;
 
 import java.io.BufferedReader;
 import java.io.StringReader;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -34,22 +35,25 @@ public class JSON2
             // object
             case '{':
               return parseObject(str);
-            // array
+              // array
             case '[':
               return parseArray(str);
-            // string
+              // string
             case '\\':
               return parseString(str);
-            // boolean
+              // boolean
             case 't':
+              str.reset();
+              return parseTrue(str);
             case 'f':
               str.reset();
-              return parseBool(str);
-            // null
+              return parseFalse(str);
+              // null
             case 'n':
               str.reset();
               return parseNull(str);
-            // number
+              // number
+            case '-':
             case '0':
             case '1':
             case '2':
@@ -61,8 +65,8 @@ public class JSON2
             case '8':
             case '9':
               str.reset();
-              return parseNum(str);          
-            // otherwise error
+              return parseNum(str);
+              // otherwise error
             default:
               throw new Exception("");
           }
@@ -73,21 +77,86 @@ public class JSON2
   }
 
   private Object parseNum(BufferedReader str)
+    throws Exception
   {
-    // TODO Auto-generated method stub
-    return null;
+    StringBuilder numString = new StringBuilder();
+    boolean num_end = false;
+    while (!num_end)
+      {
+        str.mark(1);
+        int n = str.read();
+        switch (n)
+        {
+          case '-':
+          case '0':
+          case '1':
+          case '2':
+          case '3':
+          case '4':
+          case '5':
+          case '6':
+          case '7':
+          case '8':
+          case '9':
+          case 'e':
+            numString.append(n);
+            break;
+          default:
+            num_end = true;
+            str.reset();
+            break;
+        }
+      }
+    try
+    {
+      return new BigDecimal(numString.toString());
+    }
+    catch (NumberFormatException e)
+    {
+      throw new Exception("" + e);
+    }
   }
 
   private Object parseNull(BufferedReader str)
+    throws Exception
   {
-    // TODO Auto-generated method stub
-    return null;
+    if (str.read() == 'n' && str.read() == 'u' && str.read() == 'l'
+        && str.read() == 'l')
+      {
+        return null;
+      }
+    else
+      {
+        throw new Exception("");
+      }
   }
 
-  private Object parseBool(BufferedReader str)
+  private Object parseTrue(BufferedReader str)
+    throws Exception
   {
-    // TODO Auto-generated method stub
-    return null;
+    if (str.read() == 't' && str.read() == 'r' && str.read() == 'u'
+        && str.read() == 'e')
+      {
+        return true;
+      }
+    else
+      {
+        throw new Exception("");
+      }
+  }
+
+  private Object parseFalse(BufferedReader str)
+    throws Exception
+  {
+    if (str.read() == 'f' && str.read() == 'a' && str.read() == 'l'
+        && str.read() == 's' && str.read() == 'e')
+      {
+        return false;
+      }
+    else
+      {
+        throw new Exception("");
+      }
   }
 
   private Object parseString(BufferedReader str)
@@ -101,50 +170,6 @@ public class JSON2
     // TODO Auto-generated method stub
     return null;
   }
-
-  
-  
-  /*
-   * if (str.read() == 'r' && str.read() == 'u' && str.read() == 'e')
-                {
-                  result = true;
-                }
-              else
-                {
-                  throw new Exception("");
-                }
-              break;
-            // false
-            case 'f':
-              if (str.read() == 'a' && str.read() == 'l' && str.read() == 's'
-                  && str.read() == 'e')
-                {
-                  result = false;
-                }
-              else
-                {
-                  throw new Exception("");
-                }
-              break;
-              if (str.read() == 'u' && str.read() == 'l' && str.read() == 'l')
-                {
-                  result = null;
-                }
-              else
-                {
-                  throw new Exception("");
-                }
-<<<<<<< HEAD
-                              int next = str.read();
-              if (next == '"')
-                {
-                  result = parseString(str);
-                }
-              else
-                {
-                  throw new Exception("Invalid character " + next);
-                }
-   */
 
   public Object parseArray(BufferedReader str)
     throws Exception
