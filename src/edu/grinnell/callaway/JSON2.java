@@ -17,9 +17,9 @@ public class JSON2
   public Object parse(BufferedReader str)
     throws Exception
   {
-    int c;
-    Object result;
-    while ((c = str.read()) != -1)
+    str.mark(1);
+    int c = str.read();
+    while (c != -1)
       {
         switch (c)
           {
@@ -33,27 +33,79 @@ public class JSON2
               break;
             // object
             case '{':
-              result = parseObject(str);
-              break;
+              return parseObject(str);
             // array
             case '[':
-              result = parseArray(str);
-              break;
+              return parseArray(str);
             // string
             case '\\':
-              int next = str.read();
-              if (next == '"')
-                {
-                  result = parseString(str);
-                }
-              else
-                {
-                  throw new Exception("Invalid character " + next);
-                }
-              break;
-            // true
+              return parseString(str);
+            // boolean
             case 't':
-              if (str.read() == 'r' && str.read() == 'u' && str.read() == 'e')
+            case 'f':
+              str.reset();
+              return parseBool(str);
+            // null
+            case 'n':
+              str.reset();
+              return parseNull(str);
+            // number
+            case '0':
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+            case '9':
+              str.reset();
+              return parseNum(str);          
+            // otherwise error
+            default:
+              throw new Exception("");
+          }
+        str.mark(1);
+        c = str.read();
+      }
+    throw new Exception("");
+  }
+
+  private Object parseNum(BufferedReader str)
+  {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  private Object parseNull(BufferedReader str)
+  {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  private Object parseBool(BufferedReader str)
+  {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  private Object parseString(BufferedReader str)
+  {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  private Object parseObject(BufferedReader str)
+  {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  
+  
+  /*
+   * if (str.read() == 'r' && str.read() == 'u' && str.read() == 'e')
                 {
                   result = true;
                 }
@@ -74,8 +126,6 @@ public class JSON2
                   throw new Exception("");
                 }
               break;
-            // null
-            case 'n':
               if (str.read() == 'u' && str.read() == 'l' && str.read() == 'l')
                 {
                   result = null;
@@ -84,59 +134,15 @@ public class JSON2
                 {
                   throw new Exception("");
                 }
-              break;
-            // number
-            case '0':
-            case '1':
-            case '2':
-            case '3':
-            case '4':
-            case '5':
-            case '6':
-            case '7':
-            case '8':
-            case '9':
-              StringBuilder numString = new StringBuilder();
-              numString.append(c);
-              
-              break;
-            // otherwise error
-            default:
-
-              throw new Exception("");
-          }
-      }
-    return result;
-  }
-
-  public Object parseArray(BufferedReader str)
-    throws Exception
-  {
-    Vector<Object> array = new Vector<Object>();
-
-    int c;
-    str.mark(1);
-    c = str.read();
-    while (c != ']')
-      {
-        switch (c)
-          {
-          // ignore whitespace chars
-            case ' ':
-            case '\n':
-            case '\t':
-            case '\r':
-            case '\b':
-            case '\f':
-              break;
-            default:
-              str.reset();
-              // add to array
-              parse(str);
-          }
-        str.mark(1);
-        c = str.read();
-      }
-  }
+                              int next = str.read();
+              if (next == '"')
+                {
+                  result = parseString(str);
+                }
+              else
+                {
+                  throw new Exception("Invalid character " + next);
+                }
+   */
 
 }
