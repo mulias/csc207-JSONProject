@@ -57,7 +57,7 @@ public class JSON
           {
             switch (c)
               {
-                // these are formatting and can be ignored
+              // these are formatting and can be ignored
                 case ' ':
                 case '\n':
                 case '\t':
@@ -67,16 +67,50 @@ public class JSON
                   break;
                 // start of a key string
                 case '"':
-
+                  // find matching close quote
+                  // scan through each char until quote is found
+                  int valueStart = i;
+                  while ((c = str.charAt(++i)) != '"')
+                    {
+                      // skip over '\"' chars
+                      if (c == '\\')
+                        {
+                          if (str.charAt(i + 1) == '"')
+                            {
+                              ++i;
+                            }
+                        }
+                    }
+                  int valueEnd = i;
+                  String key = str.substring(valueStart, valueEnd);
+                  key_found = true;
                   break;
                 // otherwise error
                 default:
-                  throw new Exception("Invalid syntax: object must contain only key value piars");
+                  throw new Exception(
+                                      "Invalid syntax: object must contain only key value piars");
               }
           }
-        else // key found, find value
+        // key found, find value
+        else
           {
-            
+            switch (c)
+              {
+              // these are formatting and can be ignored
+                case ' ':
+                case '\n':
+                case '\t':
+                case '\r':
+                case '\b':
+                case '\f':
+                  break;
+                // start of a value
+                case ':':
+                  
+                default:
+                  throw new Exception(
+                                      "Invalid syntax: key must be followed by a value");
+              }
           }
 
       }
