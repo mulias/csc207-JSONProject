@@ -75,4 +75,24 @@ public class JSON2
       }
     return result;
   }
-}
+
+  public Object parseArray(BufferedReader str) throws Exception
+  {
+    Vector<Object> array= new Vector<Object>();
+    
+    parse(str.substring(1));
+    int c;
+   while((c =str.read())!= ']'){
+      switch (c){
+        
+        
+   }
+    
+   
+    
+
+          }
+      }
+
+  }
+
