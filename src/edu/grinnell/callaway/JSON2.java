@@ -98,7 +98,7 @@ public class JSON2
             case '9':
               StringBuilder numString = new StringBuilder();
               numString.append(c);
-              
+
               break;
             // otherwise error
             default:
@@ -117,11 +117,16 @@ public class JSON2
     int c;
     str.mark(1);
     c = str.read();
+    if (c == ',')
+      {
+        throw new Exception("array can not start with ','");
+      }
     while (c != ']')
       {
         switch (c)
           {
           // ignore whitespace chars
+            case ',':
             case ' ':
             case '\n':
             case '\t':
@@ -131,12 +136,11 @@ public class JSON2
               break;
             default:
               str.reset();
-              // add to array
-              parse(str);
+              array.add(parse(str));
           }
         str.mark(1);
         c = str.read();
       }
+    return array;
   }
-
 }
