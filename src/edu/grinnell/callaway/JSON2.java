@@ -44,7 +44,7 @@ public class JSON2
               int next = str.read();
               if (next == '"')
                 {
-                result = parseString(str);
+                  result = parseString(str);
                 }
               else
                 {
@@ -53,17 +53,37 @@ public class JSON2
               break;
             // true
             case 't':
-              ;
-              //= str.read(cbuf)
-              result = null;
+              if (str.read() == 'r' && str.read() == 'u' && str.read() == 'e')
+                {
+                  result = true;
+                }
+              else
+                {
+                  throw new Exception("");
+                }
               break;
             // false
             case 'f':
-              result = null;
+              if (str.read() == 'a' && str.read() == 'l' && str.read() == 's'
+                  && str.read() == 'e')
+                {
+                  result = false;
+                }
+              else
+                {
+                  throw new Exception("");
+                }
               break;
             // null
             case 'n':
-              result = null;
+              if (str.read() == 'u' && str.read() == 'l' && str.read() == 'l')
+                {
+                  result = null;
+                }
+              else
+                {
+                  throw new Exception("");
+                }
               break;
             // number
             case '0':
@@ -76,7 +96,9 @@ public class JSON2
             case '7':
             case '8':
             case '9':
-
+              StringBuilder numString = new StringBuilder();
+              numString.append(c);
+              
               break;
             // otherwise error
             default:
@@ -87,23 +109,34 @@ public class JSON2
     return result;
   }
 
-  public Object parseArray(BufferedReader str) throws Exception
+  public Object parseArray(BufferedReader str)
+    throws Exception
   {
-    Vector<Object> array= new Vector<Object>();
-    
-    parse(str.substring(1));
+    Vector<Object> array = new Vector<Object>();
+
     int c;
-   while((c =str.read())!= ']'){
-      switch (c){
-        
-        
-   }
-    
-   
-    
-
+    str.mark(1);
+    c = str.read();
+    while (c != ']')
+      {
+        switch (c)
+          {
+          // ignore whitespace chars
+            case ' ':
+            case '\n':
+            case '\t':
+            case '\r':
+            case '\b':
+            case '\f':
+              break;
+            default:
+              str.reset();
+              // add to array
+              parse(str);
           }
+        str.mark(1);
+        c = str.read();
       }
-
   }
 
+}
