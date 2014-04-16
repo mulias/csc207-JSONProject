@@ -14,12 +14,20 @@ import edu.grinnell.callaway.jsonvalues.JSONValue;
 
 public class JSONParser2
 {
-
+  /**
+   * 
+   */
   public JSONParser2()
   {
 
   }
 
+  /**
+   * 
+   * @param str
+   * @return
+   * @throws Exception
+   */
   public JSONValue parse(String str)
     throws Exception
   {
@@ -27,6 +35,12 @@ public class JSONParser2
     return this.parse(text);
   }
 
+  /**
+   * 
+   * @param buffer
+   * @return
+   * @throws Exception
+   */
   public JSONValue parse(BufferedReader buffer)
     throws Exception
   {
@@ -103,6 +117,12 @@ public class JSONParser2
     throw new Exception("2");
   }
 
+  /**
+   * 
+   * @param buffer
+   * @return
+   * @throws Exception
+   */
   public JSONNumber parseNum(BufferedReader buffer)
     throws Exception
   {
@@ -154,6 +174,12 @@ public class JSONParser2
       }
   }
 
+  /**
+   * 
+   * @param buffer
+   * @return
+   * @throws Exception
+   */
   public JSONNull parseNull(BufferedReader buffer)
     throws Exception
   {
@@ -170,6 +196,12 @@ public class JSONParser2
       }
   }
 
+  /**
+   * 
+   * @param buffer
+   * @return
+   * @throws Exception
+   */
   public JSONBoolean parseTrue(BufferedReader buffer)
     throws Exception
   {
@@ -186,6 +218,12 @@ public class JSONParser2
       }
   }
 
+  /**
+   * 
+   * @param buffer
+   * @return
+   * @throws Exception
+   */
   public JSONBoolean parseFalse(BufferedReader buffer)
     throws Exception
   {
@@ -202,6 +240,12 @@ public class JSONParser2
       }
   }
 
+  /**
+   * 
+   * @param buffer
+   * @return
+   * @throws Exception
+   */
   public JSONString parseString(BufferedReader buffer)
     throws Exception
   {
@@ -259,6 +303,12 @@ public class JSONParser2
     return new JSONString(builder.toString());
   }
 
+  /**
+   * 
+   * @param buffer
+   * @return
+   * @throws Exception
+   */
   public JSONArray parseArray(BufferedReader buffer)
     throws Exception
   {
@@ -326,6 +376,12 @@ public class JSONParser2
     return new JSONArray(vec);
   }
 
+  /**
+   * 
+   * @param buffer
+   * @return
+   * @throws Exception
+   */
   public JSONObject parseObject(BufferedReader buffer)
     throws Exception
   {
@@ -415,7 +471,8 @@ public class JSONParser2
     throws Exception
   {
     JSONParser2 parser = new JSONParser2();
-    JSONValue val = parser.parse("{ \"test\":false \"One\":2 \"obJ\":{ \"1\":1e34 } \"arr\":[ 1, 2, 3, true, null ] }");
+    JSONValue val =
+        parser.parse("{ \"test\":false \t \"One\":2 \"obJ\"    :{ \"1\":1e34 } \"arr\":\n[ 1, 2, 3, true, null ] } true");
     System.out.println(val.toJSON());
   }
 }
