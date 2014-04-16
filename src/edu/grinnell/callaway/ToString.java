@@ -1,15 +1,33 @@
 package edu.grinnell.callaway;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Vector;
 
 // This needs to be moved to the other class at some point...
 public class ToString
 {
+
+  @SuppressWarnings("unchecked")
+  public String toStr(Object obj)
+  {
+    if (obj.getClass().equals(HashMap.class))
+      {
+        return objToString((HashMap<String, Object>) obj);
+      }
+    else if (obj.getClass().equals(Vector.class))
+      {
+        return vecToString((Vector<?>) obj);
+      }
+    else
+      return obj.toString();
+  }
+
   // /http://stackoverflow.com/questions/10462819/get-keys-from-hashmap-in-java
   @SuppressWarnings("unchecked")
-  public static String toStr(HashMap<String, Object> hash)
+  public String objToString(HashMap<String, Object> hash)
   {
+    // HashMap<String, Object> hash = (HashMap<String, Object>) obj;
     String str = "{";
     for (String key : hash.keySet())
       {
@@ -19,7 +37,7 @@ public class ToString
         if (val == null)
           str += val + ",";
         else if (val.getClass().equals(HashMap.class))
-          str += toStr((HashMap<String, Object>) val) + ",";
+          str += objToString((HashMap<String, Object>) val) + ",";
         else if (val.getClass().equals(String.class))
           str += "\"" + val + "\",";
         else if (val.getClass().equals(Vector.class))
@@ -32,7 +50,7 @@ public class ToString
   } // toStr(HashMap)
 
   @SuppressWarnings("unchecked")
-  public static String vecToString(Vector<?> vec)
+  public String vecToString(Vector<?> vec)
   {
     String str = "[";
 
@@ -45,7 +63,7 @@ public class ToString
         else if (val.getClass().equals(Vector.class))
           str += vecToString((Vector<?>) val) + ",";
         else if (val.getClass().equals(HashMap.class))
-          str += toStr((HashMap<String, Object>) val) + ",";
+          str += objToString((HashMap<String, Object>) val) + ",";
         else if (val.getClass().equals(String.class))
           str += "\"" + val + "\",";
         else
@@ -58,12 +76,12 @@ public class ToString
   public static void main(String args[])
   {
     HashMap<String, Object> htable = new HashMap<String, Object>(8);
-    
-    Vector vector = new Vector(3);
+
+    Vector<Serializable> vector = new Vector<Serializable>(3);
     vector.add(1);
     vector.add(2);
 
-    Vector vector2 = new Vector(3);
+    Vector<Serializable> vector2 = new Vector<Serializable>(3);
     vector2.add(vector);
     vector2.add(2);
 
@@ -82,6 +100,8 @@ public class ToString
     htable.put("e", null);
     htable.put("f", htab);
 
-    System.out.println(toStr(htable));
+    ToString str = new ToString();
+    
+    System.out.println(str.toStr((Object) htable));
   } // main
 } // class ToString
