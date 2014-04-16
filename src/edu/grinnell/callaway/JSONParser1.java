@@ -409,7 +409,8 @@ public class JSONParser1
     throws Exception
   {
     JSONParser1 parser = new JSONParser1();
-    HashMap<String, Object> val = (HashMap<String, Object>) parser.parse("{ \"test\":false \"One\":2 \"obJ\":{ \"1\":1e34 } \"arr\":[ 1, 2, 3, true, null ] }");
-    System.out.println(ToString.toStr(val));
+    ToString str = new ToString();
+    Object val = parser.parse("{ \"test\":false \"One\":2 \"obJ\":{ \"1\":1e34 } \"arr\":[ 1, 2, 3, true, null ] }");
+    System.out.println(str.toStr(val));
   }
 }
