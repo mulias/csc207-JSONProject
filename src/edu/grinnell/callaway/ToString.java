@@ -7,18 +7,15 @@ import java.util.Vector;
 // This needs to be moved to the other class at some point...
 public class ToString
 {
-
   @SuppressWarnings("unchecked")
   public String toStr(Object obj)
   {
-    if (obj.getClass().equals(HashMap.class))
-      {
-        return objToString((HashMap<String, Object>) obj);
-      }
+    if (obj == null)
+      return "null";
+    else if (obj.getClass().equals(HashMap.class))
+      return objToString((HashMap<String, Object>) obj);
     else if (obj.getClass().equals(Vector.class))
-      {
-        return vecToString((Vector<?>) obj);
-      }
+      return vecToString((Vector<?>) obj);
     else
       return obj.toString();
   }
@@ -101,7 +98,7 @@ public class ToString
     htable.put("f", htab);
 
     ToString str = new ToString();
-    
+
     System.out.println(str.toStr((Object) htable));
   } // main
 } // class ToString
