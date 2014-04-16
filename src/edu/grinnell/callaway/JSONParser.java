@@ -39,13 +39,13 @@ public class JSONParser
               break;
             case '{':
               // object
-              //return parseObject(str);
+              // return parseObject(str);
             case '[':
               // array
-              //return parseArray(str);
+              // return parseArray(str);
             case '\\':
               // string
-              //return parseString(str);
+              // return parseString(str);
             case 't':
               // true
               str.reset();
@@ -71,7 +71,7 @@ public class JSONParser
             case '9':
               // number
               str.reset();
-              //return parseNum(str);
+              // return parseNum(str);
               // otherwise error
             default:
               throw new Exception("1");
@@ -171,12 +171,6 @@ public class JSONParser
     return null;
   }
 
-  private Object parseObject(BufferedReader str)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
   public Object parseArray(BufferedReader str)
     throws Exception
   {
@@ -211,11 +205,11 @@ public class JSONParser
       }
     return array;
   }
-  
-  @SuppressWarnings({ "unchecked", "rawtypes" })
+
   public Object parseObject(BufferedReader str)
+    throws Exception
   {
-    Hashtable table = new Hashtable();
+    HashMap<String, Object> table = new HashMap<String, Object>();
     int c;
     String key = null;
     str.mark(1);
@@ -224,15 +218,17 @@ public class JSONParser
       {
         throw new Exception("array can not start with key should be a string");
       }
-    //not sure how to advance the bufferedreader so that it goes past the fist ". str.read()?
+    // not sure how to advance the bufferedreader so that it goes past the fist
+    // ". str.read()?
     else
       {
 
-        while ((c = str.read()) != '}')        //<---------------------I have reason to believe that this is buggy
-          {                                    //|                 ^
-            while ((c = str.read()) != '"')    //|<----------------|
-              {                                //|                 |
-                key = key + c;  //_______________|<----------------|
+        while ((c = str.read()) != '}') // <---------------------I have reason
+                                        // to believe that this is buggy
+          { // | ^
+            while ((c = str.read()) != '"') // |<----------------|
+              { // | |
+                key = key + c; // _______________|<----------------|
 
               }
             if (c == ':')
@@ -244,7 +240,6 @@ public class JSONParser
       }
     return table;
   }
-  
 
   public static void main(String[] args)
     throws Exception
