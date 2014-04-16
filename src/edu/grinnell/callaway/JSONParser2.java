@@ -125,7 +125,7 @@ public class JSONParser2
             case '+':
             case '.':
               // build number
-              builder.append(n);
+              builder.append((char)n);
               break;
             default:
               num_end = true;
@@ -225,7 +225,7 @@ public class JSONParser2
                 {
                   case '"':
                   case '\\':
-                    builder.append(c);
+                    builder.append((char)c);
                     break;
                   default:
                     throw new Exception("");
@@ -236,7 +236,7 @@ public class JSONParser2
               break;
             default:
               // add all chars to string
-              builder.append(c);
+              builder.append((char)c);
               break;
           }
       }
@@ -257,29 +257,23 @@ public class JSONParser2
         if (!found_value)
           {
             switch (c)
-            {
-            // ignore whitespace chars
-              case ',':
-              case ' ':
-              case '\n':
-              case '\t':
-              case '\r':
-              case '\b':
-              case '\f':
-                break;
-              case 
+              {
+              // ignore whitespace chars
+                case ',':
+                case ' ':
+                case '\n':
+                case '\t':
+                case '\r':
+                case '\b':
+                case '\f':
+                  break;
+                default:
+                  str.reset();
+                  array.add(parse(str));
+              }
+            str.mark(1);
+            c = str.read();
           }
-        else
-          {
-            
-          }
-        
-            default:
-              str.reset();
-              array.add(parse(str));
-          }
-        str.mark(1);
-        c = str.read();
       }
     return new JSONArray(array);
   }
@@ -323,7 +317,7 @@ public class JSONParser2
     throws Exception
   {
     JSONParser2 parser = new JSONParser2();
-    JSONValue val = parser.parse("null");
+    JSONValue val = parser.parse("123e-4");
     System.out.println(val.toJSON());
   }
 }
