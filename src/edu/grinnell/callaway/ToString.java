@@ -16,6 +16,8 @@ public class ToString
       return objToString((HashMap<String, Object>) obj);
     else if (obj.getClass().equals(Vector.class))
       return vecToString((Vector<?>) obj);
+    else if (obj.getClass().equals(String.class))
+      return "\"" + obj.toString() + "\"";
     else
       return obj.toString();
   }
@@ -24,7 +26,6 @@ public class ToString
   @SuppressWarnings("unchecked")
   public String objToString(HashMap<String, Object> hash)
   {
-    // HashMap<String, Object> hash = (HashMap<String, Object>) obj;
     String str = "{";
     for (String key : hash.keySet())
       {

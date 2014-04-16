@@ -22,6 +22,7 @@ public class JSONTester
     assertEquals("3. num", "2.34", str.toStr(2.34));
     assertEquals("4. enum", "2.3E35", str.toStr(23e34));
     assertEquals("5. null", "null", str.toStr(null));
+    assertEquals("6. string", "\"a string\"", str.toStr("a string"));
   } // toStrTestVals
 
   @Test
