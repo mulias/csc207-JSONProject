@@ -11,7 +11,7 @@ import edu.grinnell.callaway.jsonvalues.JSONNull;
 import edu.grinnell.callaway.jsonvalues.JSONNumber;
 import edu.grinnell.callaway.jsonvalues.JSONObject;
 import edu.grinnell.callaway.jsonvalues.JSONString;
-import edu.grinnell.callaway.jsonvalues.JSONTrue;
+import edu.grinnell.callaway.jsonvalues.JSONBoolean;
 import edu.grinnell.callaway.jsonvalues.JSONValue;
 
 public class JSONParser2
@@ -29,44 +29,54 @@ public class JSONParser2
     return this.parse(text);
   }
 
-  public JSONValue parse(BufferedReader str)
+  public JSONValue parse(BufferedReader buffer)
     throws Exception
   {
-    str.mark(1);
-    int c = str.read();
-    while (c != -1)
+    // mark each space in buffer before advancing one
+    // advance through each char in buffer
+    // ignore whitespace
+    // if char signals the opener of a JSONValue, such as {, [, or "
+    // // parse that object starting at the next char
+    // if char is the first char in a JSONValue, such as t in true or 1 in 125
+    // // use the mark to back up one char and then parse the object
+    // if the end of the buffer is reached before an object is found
+    // // throw exception
+    boolean buffer_end = false;
+    while (!buffer_end)
       {
+        buffer.mark(1);
+        int c = buffer.read();
         switch (c)
           {
-          // ignore whitespace chars
             case ' ':
             case '\n':
             case '\t':
             case '\r':
             case '\b':
             case '\f':
+              // ignore whitespace chars
               break;
             case '{':
               // object
-              return parseObject(str);
+              return parseObject(buffer);
             case '[':
               // array
-              return parseArray(str);
+              return parseArray(buffer);
             case '\"':
               // string
-              return parseString(str);
+              return parseString(buffer);
             case 't':
               // true
-              str.reset();
-              return parseTrue(str);
+              buffer.reset();
+              return parseTrue(buffer);
             case 'f':
               // false
-              str.reset();
-              return parseFalse(str);
+              buffer.reset();
+              return parseFalse(buffer);
             case 'n':
               // null
-              str.reset();
-              return parseNull(str);
+              buffer.reset();
+              return parseNull(buffer);
             case '0':
             case '1':
             case '2':
@@ -81,22 +91,24 @@ public class JSONParser2
             case '+':
             case '.':
               // number
-              str.reset();
-              return parseNum(str);
-              // otherwise error
+              buffer.reset();
+              return parseNum(buffer);
+            case -1:
+              // end of buffer
+              buffer_end = true;
+              break;
+            // otherwise error
             default:
               throw new Exception("1");
           }
-        str.mark(1);
-        c = str.read();
       }
     throw new Exception("2");
   }
 
-  public JSONNumber parseNum(BufferedReader str)
+  public JSONNumber parseNum(BufferedReader buffer)
     throws Exception
   {
-    // use a stringbuilder to stick nums together
+    // use a StringBuilder to stick nums together
     // when we reach a non-number char
     // // stop, use str.reset() to backup one
     // try to make a BigDecimal
@@ -105,8 +117,8 @@ public class JSONParser2
     boolean num_end = false;
     while (!num_end)
       {
-        str.mark(1);
-        int n = str.read();
+        buffer.mark(1);
+        int n = buffer.read();
         switch (n)
           {
             case '0':
@@ -125,11 +137,12 @@ public class JSONParser2
             case '+':
             case '.':
               // build number
-              builder.append((char)n);
+              builder.append((char) n);
               break;
+            // any non-number char, including buffer end
             default:
               num_end = true;
-              str.reset();
+              buffer.reset();
               break;
           }
       }
@@ -143,13 +156,13 @@ public class JSONParser2
       }
   }
 
-  public JSONNull parseNull(BufferedReader str)
+  public JSONNull parseNull(BufferedReader buffer)
     throws Exception
   {
     // if the next chars spell out 'null', return null
     // otherwise throw exception
-    if (str.read() == 'n' && str.read() == 'u' && str.read() == 'l'
-        && str.read() == 'l')
+    if (buffer.read() == 'n' && buffer.read() == 'u' && buffer.read() == 'l'
+        && buffer.read() == 'l')
       {
         return new JSONNull();
       }
@@ -159,15 +172,15 @@ public class JSONParser2
       }
   }
 
-  public JSONTrue parseTrue(BufferedReader str)
+  public JSONBoolean parseTrue(BufferedReader buffer)
     throws Exception
   {
     // if the next chars spell out 'true', return true
     // otherwise throw exception
-    if (str.read() == 't' && str.read() == 'r' && str.read() == 'u'
-        && str.read() == 'e')
+    if (buffer.read() == 't' && buffer.read() == 'r' && buffer.read() == 'u'
+        && buffer.read() == 'e')
       {
-        return new JSONTrue();
+        return new JSONBoolean(true);
       }
     else
       {
@@ -175,15 +188,15 @@ public class JSONParser2
       }
   }
 
-  public JSONFalse parseFalse(BufferedReader str)
+  public JSONBoolean parseFalse(BufferedReader buffer)
     throws Exception
   {
     // if the next chars spell out 'true', return true
     // otherwise throw exception
-    if (str.read() == 'f' && str.read() == 'a' && str.read() == 'l'
-        && str.read() == 's' && str.read() == 'e')
+    if (buffer.read() == 'f' && buffer.read() == 'a' && buffer.read() == 'l'
+        && buffer.read() == 's' && buffer.read() == 'e')
       {
-        return new JSONFalse();
+        return new JSONBoolean(false);
       }
     else
       {
@@ -191,20 +204,24 @@ public class JSONParser2
       }
   }
 
-  public JSONString parseString(BufferedReader str)
+  public JSONString parseString(BufferedReader buffer)
     throws Exception
   {
     // save each char to a StringBuilder
     // if c = \
-    // // check if next is ", if so add " to SB
+    // // check if next is " accepted non-whitespace escape char, add it
     // // else throw exception
     // if c = "
     // // done
+    // if end of buffer
+    // throw no closing " error
+    // if c is any other char
+    // // add it
     StringBuilder builder = new StringBuilder();
     boolean str_end = false;
     while (!str_end)
       {
-        int c = str.read();
+        int c = buffer.read();
         switch (c)
           {
             case '\n':
@@ -214,110 +231,192 @@ public class JSONParser2
             case '\f':
               // ignore whitespace chars
               break;
-            case -1:
-              // reach end of json before ending string
-              throw new Exception("end of input");
             case '\\':
               // escape char for " or \
               // json should support \/, but java doesn't
-              c = str.read();
+              c = buffer.read();
               switch (c)
                 {
                   case '"':
                   case '\\':
-                    builder.append((char)c);
+                    builder.append((char) c);
                     break;
                   default:
                     throw new Exception("");
                 }
+              break;
             case '"':
               // string is done
               str_end = true;
               break;
+            case -1:
+              // reach end of json before ending string
+              throw new Exception("no closing \" before end of input");
             default:
               // add all chars to string
-              builder.append((char)c);
+              builder.append((char) c);
               break;
           }
       }
     return new JSONString(builder.toString());
   }
 
-  public JSONArray parseArray(BufferedReader str)
+  public JSONArray parseArray(BufferedReader buffer)
     throws Exception
   {
-    Vector<JSONValue> array = new Vector<JSONValue>();
-
-    str.mark(1);
-    int c = str.read();
-    boolean found_value = false;
-
-    while (c != ']')
+    // save values in array to a vector
+    // go through each char until closing ']' is found
+    // if we have not found a value
+    // // search for any char, send it to parse
+    // // save value to vector
+    // if we have found a value
+    // // search for ','
+    // // throw exception if not found
+    // // search for new value
+    // if end of buffer
+    // // throw exception
+    Vector<JSONValue> vec = new Vector<JSONValue>();
+    boolean array_end = false;
+    boolean value_found = false;
+    while (!array_end)
       {
-        if (!found_value)
+        buffer.mark(1);
+        int c = buffer.read();
+        switch (c)
           {
-            switch (c)
-              {
+            case ' ':
+            case '\n':
+            case '\t':
+            case '\r':
+            case '\b':
+            case '\f':
               // ignore whitespace chars
-                case ',':
-                case ' ':
-                case '\n':
-                case '\t':
-                case '\r':
-                case '\b':
-                case '\f':
-                  break;
-                default:
-                  str.reset();
-                  array.add(parse(str));
-              }
-            str.mark(1);
-            c = str.read();
+              break;
+            case ',':
+              // if we were looking for ',' find a new value
+              if (value_found)
+                {
+                  value_found = false;
+                }
+              else
+                {
+                  throw new Exception("");
+                }
+              break;
+            case ']':
+              if (value_found)
+                {
+                  array_end = true;
+                }
+              else
+                {
+                  // last char was ',' bad syntax
+                  throw new Exception("");
+                }
+              break;
+            case -1:
+              // end of buffer before array end
+              throw new Exception("");
+            default:
+              // parse value
+              buffer.reset();
+              vec.add(parse(buffer));
+              value_found = true;
+              break;
           }
       }
-    return new JSONArray(array);
+    return new JSONArray(vec);
   }
 
-  public JSONObject parseObject(BufferedReader str)
+  public JSONObject parseObject(BufferedReader buffer)
     throws Exception
   {
-    HashMap<JSONString, JSONValue> table = new HashMap<JSONString, JSONValue>();
-    int c;
-    String key = null;
-    str.mark(1);
-    c = str.read();
-    if (c != '"')
+    // save values in object to a HashMap
+    // go through each char until closing '}' is found
+    // if we have not found a key
+    // // search for " to start a string
+    // // if found, send to parse, else throw exception
+    // if we have found a key
+    // // search for ':' to start a value
+    // // if found, send to parse, else throw exception
+    // if we have a key and a value
+    // // save to hash
+    // // look for new pair
+    // if end of buffer
+    // // throw exception
+    HashMap<JSONString, JSONValue> hash = new HashMap<JSONString, JSONValue>();
+    boolean key_found = false;
+    boolean value_found = false;
+    boolean hash_end = false;
+    JSONString key = null;
+    JSONValue value = null;
+    while (!hash_end)
       {
-        throw new Exception("array can not start with key should be a string");
-      }
-    // not sure how to advance the bufferedreader so that it goes past the fist
-    // ". str.read()?
-    else
-      {
-
-        while ((c = str.read()) != '}') // <---------------------I have reason
-                                        // to believe that this is buggy
-          { // | ^
-            while ((c = str.read()) != '"') // |<----------------|
-              { // | |
-                key = key + c; // _______________|<----------------|
-
-              }
-            if (c == ':')
-              {
-                str.read();
-                table.put(key, value);
-              }
+        buffer.mark(1);
+        int c = buffer.read();
+        // if key is not found
+        switch (c)
+          {
+            case ' ':
+            case '\n':
+            case '\t':
+            case '\r':
+            case '\b':
+            case '\f':
+              // ignore whitespace chars
+              break;
+            case '"':
+              if (!key_found)
+                {
+                  buffer.reset();
+                  key = (JSONString) parse(buffer);
+                  key_found = true;
+                }
+              else
+                {
+                  throw new Exception("");
+                }
+              break;
+            case ':':
+              if (key_found && !value_found)
+                {
+                  value = parse(buffer);
+                  value_found = true;
+                }
+              else
+                {
+                  throw new Exception("");
+                }
+            case '}':
+              if (key_found)
+                {
+                  throw new Exception("unresolved key value pair");
+                }
+              else
+                {
+                  hash_end = true;
+                }
+              break;
+            case -1:
+              throw new Exception("");
+            default:
+              throw new Exception("");
+          }
+        if (key_found && value_found)
+          {
+            hash.put(key, value);
+            key_found = false;
+            value_found = false;
           }
       }
-    return new JSONObject(table);
+    return new JSONObject(hash);
   }
 
   public static void main(String[] args)
     throws Exception
   {
     JSONParser2 parser = new JSONParser2();
-    JSONValue val = parser.parse("123e-4");
+    JSONValue val = parser.parse("[ \"test\", false ]");
     System.out.println(val.toJSON());
   }
 }
