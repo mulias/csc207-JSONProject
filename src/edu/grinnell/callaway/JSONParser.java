@@ -10,9 +10,9 @@ public class JSONParser
 {
   public JSONParser()
   {
-    
+
   }
-  
+
   public Object parse(String str)
     throws Exception
   {
@@ -215,6 +215,7 @@ public class JSONParser
   public static void main(String[] args)
     throws Exception
   {
-
+    JSONParser parser = new JSONParser();
+    Object val = parser.parse("tru");
   }
 }
