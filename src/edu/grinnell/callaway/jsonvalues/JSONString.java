@@ -14,7 +14,7 @@ public class JSONString
 
   public String toJSON()
   {
-    return this.str;
+    return '"' + this.str + '"';
   }
   
   public int hashCode()
