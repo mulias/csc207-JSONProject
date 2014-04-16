@@ -2,11 +2,9 @@ package edu.grinnell.callaway;
 
 import java.io.BufferedReader;
 import java.io.StringReader;
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Vector;
 import edu.grinnell.callaway.jsonvalues.JSONArray;
-import edu.grinnell.callaway.jsonvalues.JSONFalse;
 import edu.grinnell.callaway.jsonvalues.JSONNull;
 import edu.grinnell.callaway.jsonvalues.JSONNumber;
 import edu.grinnell.callaway.jsonvalues.JSONObject;
@@ -387,6 +385,7 @@ public class JSONParser2
                 {
                   throw new Exception("");
                 }
+              break;
             case '}':
               if (key_found)
                 {
@@ -416,7 +415,7 @@ public class JSONParser2
     throws Exception
   {
     JSONParser2 parser = new JSONParser2();
-    JSONValue val = parser.parse("[ \"test\", false ]");
+    JSONValue val = parser.parse("{ \"test\":false \"One\":2 \"obJ\":{ \"1\":1e34 } \"arr\":[ 1, 2, 3, true, null ] }");
     System.out.println(val.toJSON());
   }
 }
