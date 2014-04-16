@@ -6,6 +6,15 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Vector;
 
+import edu.grinnell.callaway.jsonvalues.JSONArray;
+import edu.grinnell.callaway.jsonvalues.JSONFalse;
+import edu.grinnell.callaway.jsonvalues.JSONNull;
+import edu.grinnell.callaway.jsonvalues.JSONNumber;
+import edu.grinnell.callaway.jsonvalues.JSONObject;
+import edu.grinnell.callaway.jsonvalues.JSONString;
+import edu.grinnell.callaway.jsonvalues.JSONTrue;
+import edu.grinnell.callaway.jsonvalues.JSONValue;
+
 public class JSONParser
 {
   public JSONParser()
@@ -73,7 +82,7 @@ public class JSONParser
             case '.':
               // number
               str.reset();
-              // return parseNum(str);
+              return parseNum(str);
               // otherwise error
             default:
               throw new Exception("1");
