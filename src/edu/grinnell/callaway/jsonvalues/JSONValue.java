@@ -1,4 +1,4 @@
-package edu.grinnell.callaway;
+package edu.grinnell.callaway.jsonvalues;
 
 public interface JSONValue
 {
