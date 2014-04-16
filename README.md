@@ -1,4 +1,8 @@
 csc207-JSONProject
 ==================
 
-I don't know what we're doing yet, but do it here
+Todo:  
+1) Write pre/post conditions for methods  
+2) Write error messages  
+3) Write tests  
+
