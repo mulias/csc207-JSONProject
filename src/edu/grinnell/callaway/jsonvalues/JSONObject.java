@@ -18,15 +18,17 @@ public class JSONObject
   public String toJSON()
   {
     StringBuilder str = new StringBuilder();
-    str.append('{');
+    str.append("{ ");
     HashMap<JSONString, JSONValue> hash = this.object;
     Set<JSONString> keys = hash.keySet();
     for ( JSONString key : keys )
       {
         str.append(key.toJSON());
+        str.append(':');
         str.append(hash.get(key).toJSON());
+        str.append(' ');
       }
-    str.append(']');
+    str.append('}');
     return str.toString();
   }
 }
