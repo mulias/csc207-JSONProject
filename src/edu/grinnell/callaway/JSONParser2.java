@@ -5,7 +5,6 @@ import java.io.StringReader;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Vector;
-
 import edu.grinnell.callaway.jsonvalues.JSONArray;
 import edu.grinnell.callaway.jsonvalues.JSONFalse;
 import edu.grinnell.callaway.jsonvalues.JSONNull;
@@ -49,13 +48,13 @@ public class JSONParser2
               break;
             case '{':
               // object
-              // return parseObject(str);
+              return parseObject(str);
             case '[':
               // array
-              // return parseArray(str);
-            case '\\':
+              return parseArray(str);
+            case '\"':
               // string
-              // return parseString(str);
+              return parseString(str);
             case 't':
               // true
               str.reset();
@@ -97,7 +96,12 @@ public class JSONParser2
   public JSONNumber parseNum(BufferedReader str)
     throws Exception
   {
-    StringBuilder numString = new StringBuilder();
+    // use a stringbuilder to stick nums together
+    // when we reach a non-number char
+    // // stop, use str.reset() to backup one
+    // try to make a BigDecimal
+    // if the syntax is bad it will throw an exception
+    StringBuilder builder = new StringBuilder();
     boolean num_end = false;
     while (!num_end)
       {
@@ -120,7 +124,8 @@ public class JSONParser2
             case '-':
             case '+':
             case '.':
-              numString.append(n);
+              // build number
+              builder.append(n);
               break;
             default:
               num_end = true;
@@ -130,7 +135,7 @@ public class JSONParser2
       }
     try
       {
-        return new JSONNumber(numString.toString());
+        return new JSONNumber(builder.toString());
       }
     catch (NumberFormatException e)
       {
@@ -141,6 +146,8 @@ public class JSONParser2
   public JSONNull parseNull(BufferedReader str)
     throws Exception
   {
+    // if the next chars spell out 'null', return null
+    // otherwise throw exception
     if (str.read() == 'n' && str.read() == 'u' && str.read() == 'l'
         && str.read() == 'l')
       {
@@ -155,6 +162,8 @@ public class JSONParser2
   public JSONTrue parseTrue(BufferedReader str)
     throws Exception
   {
+    // if the next chars spell out 'true', return true
+    // otherwise throw exception
     if (str.read() == 't' && str.read() == 'r' && str.read() == 'u'
         && str.read() == 'e')
       {
@@ -169,6 +178,8 @@ public class JSONParser2
   public JSONFalse parseFalse(BufferedReader str)
     throws Exception
   {
+    // if the next chars spell out 'true', return true
+    // otherwise throw exception
     if (str.read() == 'f' && str.read() == 'a' && str.read() == 'l'
         && str.read() == 's' && str.read() == 'e')
       {
@@ -181,36 +192,88 @@ public class JSONParser2
   }
 
   public JSONString parseString(BufferedReader str)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  public JSONArray parseArray(BufferedReader str)
     throws Exception
   {
-    Vector<Object> array = new Vector<Object>();
-
-    int c;
-    str.mark(1);
-    c = str.read();
-    if (c == ',')
+    // save each char to a StringBuilder
+    // if c = \
+    // // check if next is ", if so add " to SB
+    // // else throw exception
+    // if c = "
+    // // done
+    StringBuilder builder = new StringBuilder();
+    boolean str_end = false;
+    while (!str_end)
       {
-        throw new Exception("array can not start with ','");
-      }
-    while (c != ']')
-      {
+        int c = str.read();
         switch (c)
           {
-          // ignore whitespace chars
-            case ',':
-            case ' ':
             case '\n':
             case '\t':
             case '\r':
             case '\b':
             case '\f':
+              // ignore whitespace chars
               break;
+            case -1:
+              // reach end of json before ending string
+              throw new Exception("end of input");
+            case '\\':
+              // escape char for " or \
+              // json should support \/, but java doesn't
+              c = str.read();
+              switch (c)
+                {
+                  case '"':
+                  case '\\':
+                    builder.append(c);
+                    break;
+                  default:
+                    throw new Exception("");
+                }
+            case '"':
+              // string is done
+              str_end = true;
+              break;
+            default:
+              // add all chars to string
+              builder.append(c);
+              break;
+          }
+      }
+    return new JSONString(builder.toString());
+  }
+
+  public JSONArray parseArray(BufferedReader str)
+    throws Exception
+  {
+    Vector<JSONValue> array = new Vector<JSONValue>();
+
+    str.mark(1);
+    int c = str.read();
+    boolean found_value = false;
+
+    while (c != ']')
+      {
+        if (!found_value)
+          {
+            switch (c)
+            {
+            // ignore whitespace chars
+              case ',':
+              case ' ':
+              case '\n':
+              case '\t':
+              case '\r':
+              case '\b':
+              case '\f':
+                break;
+              case 
+          }
+        else
+          {
+            
+          }
+        
             default:
               str.reset();
               array.add(parse(str));
@@ -218,13 +281,13 @@ public class JSONParser2
         str.mark(1);
         c = str.read();
       }
-    return array;
+    return new JSONArray(array);
   }
 
   public JSONObject parseObject(BufferedReader str)
     throws Exception
   {
-    HashMap<String, Object> table = new HashMap<String, Object>();
+    HashMap<JSONString, JSONValue> table = new HashMap<JSONString, JSONValue>();
     int c;
     String key = null;
     str.mark(1);
@@ -249,17 +312,17 @@ public class JSONParser2
             if (c == ':')
               {
                 str.read();
-                table.put(key, str);
+                table.put(key, value);
               }
           }
       }
-    return table;
+    return new JSONObject(table);
   }
 
   public static void main(String[] args)
     throws Exception
   {
-    JSONParser parser = new JSONParser();
+    JSONParser2 parser = new JSONParser2();
     JSONValue val = parser.parse("null");
     System.out.println(val.toJSON());
   }
