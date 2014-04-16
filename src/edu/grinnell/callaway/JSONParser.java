@@ -6,8 +6,13 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Vector;
 
-public class JSON2
+public class JSONParser
 {
+  public JSONParser()
+  {
+    
+  }
+  
   public Object parse(String str)
     throws Exception
   {
@@ -69,12 +74,12 @@ public class JSON2
               return parseNum(str);
               // otherwise error
             default:
-              throw new Exception("");
+              throw new Exception("1");
           }
         str.mark(1);
         c = str.read();
       }
-    throw new Exception("");
+    throw new Exception("2");
   }
 
   private Object parseNum(BufferedReader str)
@@ -114,7 +119,7 @@ public class JSON2
       }
     catch (NumberFormatException e)
       {
-        throw new Exception("" + e);
+        throw new Exception("3 " + e);
       }
   }
 
@@ -128,7 +133,7 @@ public class JSON2
       }
     else
       {
-        throw new Exception("");
+        throw new Exception("4");
       }
   }
 
@@ -142,7 +147,7 @@ public class JSON2
       }
     else
       {
-        throw new Exception("");
+        throw new Exception("5");
       }
   }
 
@@ -205,5 +210,11 @@ public class JSON2
         c = str.read();
       }
     return array;
+  }
+
+  public static void main(String[] args)
+    throws Exception
+  {
+
   }
 }
