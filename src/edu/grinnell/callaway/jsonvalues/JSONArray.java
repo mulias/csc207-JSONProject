@@ -17,15 +17,20 @@ public class JSONArray
 
   public String toJSON()
   {
-    StringBuilder str = new StringBuilder();
-    str.append('[');
+    StringBuilder builder = new StringBuilder();
+    builder.append('[');
     Iterator<JSONValue> iterator = this.array.iterator();
+    if (iterator.hasNext())
+      {
+        builder.append(iterator.next().toJSON());
+      }
     while (iterator.hasNext())
       {
-        str.append(iterator.next().toJSON());
+        builder.append(", ");
+        builder.append(iterator.next().toJSON());
       }
-    str.append(']');
-    return str.toString();
+    builder.append(']');
+    return builder.toString();
   }
 
 }
