@@ -19,14 +19,14 @@ public class JSONObject
   {
     StringBuilder str = new StringBuilder();
     str.append('{');
-    
     HashMap<JSONString, JSONValue> hash = this.object;
     Set<JSONString> keys = hash.keySet();
     for ( JSONString key : keys )
       {
-        hash
+        str.append(key.toJSON());
+        str.append(hash.get(key).toJSON());
       }
-    
-    return null;
+    str.append(']');
+    return str.toString();
   }
 }

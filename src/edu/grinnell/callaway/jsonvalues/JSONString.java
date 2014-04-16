@@ -16,4 +16,9 @@ public class JSONString
   {
     return this.str;
   }
+  
+  public int hashCode()
+  {
+    return this.str.hashCode();
+  }
 }
