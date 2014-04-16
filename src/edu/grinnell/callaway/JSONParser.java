@@ -58,7 +58,6 @@ public class JSONParser
               // null
               str.reset();
               return parseNull(str);
-            case '-':
             case '0':
             case '1':
             case '2':
@@ -69,6 +68,9 @@ public class JSONParser
             case '7':
             case '8':
             case '9':
+            case '-':
+            case '+':
+            case '.':
               // number
               str.reset();
               // return parseNum(str);
@@ -93,7 +95,6 @@ public class JSONParser
         int n = str.read();
         switch (n)
           {
-            case '-':
             case '0':
             case '1':
             case '2':
@@ -105,6 +106,10 @@ public class JSONParser
             case '8':
             case '9':
             case 'e':
+            case 'E':
+            case '-':
+            case '+':
+            case '.':
               numString.append(n);
               break;
             default:
