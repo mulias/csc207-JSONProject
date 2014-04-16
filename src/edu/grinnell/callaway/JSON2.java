@@ -32,27 +32,27 @@ public class JSON2
             case '\b':
             case '\f':
               break;
-            // object
             case '{':
+              // object
               return parseObject(str);
-              // array
             case '[':
+              // array
               return parseArray(str);
-              // string
             case '\\':
+              // string
               return parseString(str);
-              // boolean
             case 't':
+              // true
               str.reset();
               return parseTrue(str);
             case 'f':
+              // false
               str.reset();
               return parseFalse(str);
-              // null
             case 'n':
+              // null
               str.reset();
               return parseNull(str);
-              // number
             case '-':
             case '0':
             case '1':
@@ -64,6 +64,7 @@ public class JSON2
             case '7':
             case '8':
             case '9':
+              // number
               str.reset();
               return parseNum(str);
               // otherwise error
@@ -86,35 +87,35 @@ public class JSON2
         str.mark(1);
         int n = str.read();
         switch (n)
-        {
-          case '-':
-          case '0':
-          case '1':
-          case '2':
-          case '3':
-          case '4':
-          case '5':
-          case '6':
-          case '7':
-          case '8':
-          case '9':
-          case 'e':
-            numString.append(n);
-            break;
-          default:
-            num_end = true;
-            str.reset();
-            break;
-        }
+          {
+            case '-':
+            case '0':
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+            case '9':
+            case 'e':
+              numString.append(n);
+              break;
+            default:
+              num_end = true;
+              str.reset();
+              break;
+          }
       }
     try
-    {
-      return new BigDecimal(numString.toString());
-    }
+      {
+        return new BigDecimal(numString.toString());
+      }
     catch (NumberFormatException e)
-    {
-      throw new Exception("" + e);
-    }
+      {
+        throw new Exception("" + e);
+      }
   }
 
   private Object parseNull(BufferedReader str)
