@@ -1,16 +1,19 @@
 package edu.grinnell.callaway.jsonvalues;
 
-public class JSONTrue
+public class JSONBoolean
     implements
       JSONValue
 {
-  public JSONTrue()
+  
+  boolean val;
+  
+  public JSONBoolean(boolean val)
   {
-    // no values
+    this.val = val;
   }
 
   public String toJSON()
   {
-    return "true";
+    return Boolean.toString(this.val);
   }
 }
