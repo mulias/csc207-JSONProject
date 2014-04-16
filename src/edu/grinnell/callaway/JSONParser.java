@@ -211,6 +211,40 @@ public class JSONParser
       }
     return array;
   }
+  
+  @SuppressWarnings({ "unchecked", "rawtypes" })
+  public Object parseObject(BufferedReader str)
+  {
+    Hashtable table = new Hashtable();
+    int c;
+    String key = null;
+    str.mark(1);
+    c = str.read();
+    if (c != '"')
+      {
+        throw new Exception("array can not start with key should be a string");
+      }
+    //not sure how to advance the bufferedreader so that it goes past the fist ". str.read()?
+    else
+      {
+
+        while ((c = str.read()) != '}')        //<---------------------I have reason to believe that this is buggy
+          {                                    //|                 ^
+            while ((c = str.read()) != '"')    //|<----------------|
+              {                                //|                 |
+                key = key + c;  //_______________|<----------------|
+
+              }
+            if (c == ':')
+              {
+                str.read();
+                table.put(key, str);
+              }
+          }
+      }
+    return table;
+  }
+  
 
   public static void main(String[] args)
     throws Exception
