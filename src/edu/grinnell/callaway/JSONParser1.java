@@ -249,8 +249,6 @@ public class JSONParser1
   public static void main(String[] args)
     throws Exception
   {
-    JSONParser parser = new JSONParser();
-    JSONValue val = parser.parse("null");
-    System.out.println(val.toJSON());
+    
   }
 }
