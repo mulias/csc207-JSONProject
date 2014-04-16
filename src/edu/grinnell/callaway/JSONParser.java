@@ -84,7 +84,7 @@ public class JSONParser
     throw new Exception("2");
   }
 
-  private Object parseNum(BufferedReader str)
+  private JSONNumber parseNum(BufferedReader str)
     throws Exception
   {
     StringBuilder numString = new StringBuilder();
@@ -120,7 +120,7 @@ public class JSONParser
       }
     try
       {
-        return new BigDecimal(numString.toString());
+        return new JSONNumber(numString.toString());
       }
     catch (NumberFormatException e)
       {
@@ -128,7 +128,7 @@ public class JSONParser
       }
   }
 
-  private JSONNull parseNull(BufferedReader str)
+  public JSONNull parseNull(BufferedReader str)
     throws Exception
   {
     if (str.read() == 'n' && str.read() == 'u' && str.read() == 'l'
@@ -142,7 +142,7 @@ public class JSONParser
       }
   }
 
-  private JSONValue parseTrue(BufferedReader str)
+  public JSONTrue parseTrue(BufferedReader str)
     throws Exception
   {
     if (str.read() == 't' && str.read() == 'r' && str.read() == 'u'
@@ -156,7 +156,7 @@ public class JSONParser
       }
   }
 
-  private JSONValue parseFalse(BufferedReader str)
+  public JSONFalse parseFalse(BufferedReader str)
     throws Exception
   {
     if (str.read() == 'f' && str.read() == 'a' && str.read() == 'l'
@@ -170,13 +170,13 @@ public class JSONParser
       }
   }
 
-  private Object parseString(BufferedReader str)
+  public JSONString parseString(BufferedReader str)
   {
     // TODO Auto-generated method stub
     return null;
   }
 
-  public Object parseArray(BufferedReader str)
+  public JSONArray parseArray(BufferedReader str)
     throws Exception
   {
     Vector<Object> array = new Vector<Object>();
@@ -211,7 +211,7 @@ public class JSONParser
     return array;
   }
 
-  public Object parseObject(BufferedReader str)
+  public JSONObject parseObject(BufferedReader str)
     throws Exception
   {
     HashMap<String, Object> table = new HashMap<String, Object>();
