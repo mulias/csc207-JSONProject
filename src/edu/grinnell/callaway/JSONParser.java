@@ -13,14 +13,14 @@ public class JSONParser
 
   }
 
-  public Object parse(String str)
+  public JSONValue parse(String str)
     throws Exception
   {
     BufferedReader text = new BufferedReader(new StringReader(str));
     return this.parse(text);
   }
 
-  public Object parse(BufferedReader str)
+  public JSONValue parse(BufferedReader str)
     throws Exception
   {
     str.mark(1);
@@ -39,13 +39,13 @@ public class JSONParser
               break;
             case '{':
               // object
-              return parseObject(str);
+              //return parseObject(str);
             case '[':
               // array
-              return parseArray(str);
+              //return parseArray(str);
             case '\\':
               // string
-              return parseString(str);
+              //return parseString(str);
             case 't':
               // true
               str.reset();
@@ -71,7 +71,7 @@ public class JSONParser
             case '9':
               // number
               str.reset();
-              return parseNum(str);
+              //return parseNum(str);
               // otherwise error
             default:
               throw new Exception("1");
@@ -123,13 +123,13 @@ public class JSONParser
       }
   }
 
-  private Object parseNull(BufferedReader str)
+  private JSONNull parseNull(BufferedReader str)
     throws Exception
   {
     if (str.read() == 'n' && str.read() == 'u' && str.read() == 'l'
         && str.read() == 'l')
       {
-        return null;
+        return new JSONNull();
       }
     else
       {
@@ -137,13 +137,13 @@ public class JSONParser
       }
   }
 
-  private Object parseTrue(BufferedReader str)
+  private JSONValue parseTrue(BufferedReader str)
     throws Exception
   {
     if (str.read() == 't' && str.read() == 'r' && str.read() == 'u'
         && str.read() == 'e')
       {
-        return true;
+        return new JSONTrue();
       }
     else
       {
@@ -151,13 +151,13 @@ public class JSONParser
       }
   }
 
-  private Object parseFalse(BufferedReader str)
+  private JSONValue parseFalse(BufferedReader str)
     throws Exception
   {
     if (str.read() == 'f' && str.read() == 'a' && str.read() == 'l'
         && str.read() == 's' && str.read() == 'e')
       {
-        return false;
+        return new JSONFalse();
       }
     else
       {
@@ -216,6 +216,7 @@ public class JSONParser
     throws Exception
   {
     JSONParser parser = new JSONParser();
-    Object val = parser.parse("tru");
+    JSONValue val = parser.parse("null");
+    System.out.println(val.toJSON());
   }
 }
