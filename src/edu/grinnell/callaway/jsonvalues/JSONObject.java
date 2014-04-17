@@ -26,9 +26,11 @@ public class JSONObject
         str.append(key.toJSON());
         str.append(':');
         str.append(hash.get(key).toJSON());
-        str.append(' ');
+        str.append(", ");
       }
     str.append('}');
+    int l = str.length();
+    str.replace(l -3, l-1, " ");
     return str.toString();
   }
 }

@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Vector;
 
+<<<<<<< HEAD:src/edu/grinnell/callaway/JSONParser1.java
 /**
  * Parse JSON string to java object(HashTable)
  * @author Shaun, Mataire
@@ -32,6 +33,10 @@ public class JSONParser1
    * the JSON string/bufferedreader has been passed to a Java HasTable object
    * @throws Exception
    */
+=======
+public class JSONParser
+{
+>>>>>>> a4e55d3708e0bbd70116b0fde92c6cdf96409392:src/edu/grinnell/callaway/JSONParser.java
   public Object parse(String str)
     throws Exception
   {
@@ -40,6 +45,7 @@ public class JSONParser1
   }//Object parse(String str)
 
   /**
+<<<<<<< HEAD:src/edu/grinnell/callaway/JSONParser1.java
    * parse JSON string to java Object
    * @param buffer
    * @return
@@ -48,6 +54,11 @@ public class JSONParser1
    * buffer is not null
    * @post
    * the JSON string/bufferedreader has been passed to a Java HasTable object
+=======
+   * 
+   * @param buffer
+   * @return
+>>>>>>> a4e55d3708e0bbd70116b0fde92c6cdf96409392:src/edu/grinnell/callaway/JSONParser.java
    * @throws Exception
    */
   public Object parse(BufferedReader buffer)
@@ -120,6 +131,7 @@ public class JSONParser1
               break;
             // otherwise error
             default:
+<<<<<<< HEAD:src/edu/grinnell/callaway/JSONParser1.java
               throw new Exception("1");
           }//switch(c)
       }//while
@@ -133,6 +145,18 @@ public class JSONParser1
    * @post
    * string/bufferedreader is parsed to java BigDecimal
    * @param buffer
+=======
+              throw new Exception("JSON ERROR: Invalid input character " + c);
+          } // switch(c)
+      } // while (!buffer_end)
+    throw new Exception("JSON ERROR: no json values found in input");
+  } // parse(BufferedReader)
+
+  /**
+   * 
+   * @param buffer
+   * @return
+>>>>>>> a4e55d3708e0bbd70116b0fde92c6cdf96409392:src/edu/grinnell/callaway/JSONParser.java
    * @throws Exception
    */
   public BigDecimal parseNum(BufferedReader buffer)
@@ -174,6 +198,7 @@ public class JSONParser1
               num_end = true;
               buffer.reset();
               break;
+<<<<<<< HEAD:src/edu/grinnell/callaway/JSONParser1.java
           }//switch (n)
       }//while(!num_end)
     try
@@ -194,7 +219,27 @@ public class JSONParser1
    * @return
    * @throws Exception
    */
+=======
+          } // switch (n)
+      } // while (!num_end)
+    String number = builder.toString();
+    try
+      {
+        return new BigDecimal(number);
+      } // try
+    catch (NumberFormatException e)
+      {
+        throw new Exception("JSON NUMBER ERROR: invalid number" + number);
+      } // catch
+  } // parseNum(BufferedReader)
+>>>>>>> a4e55d3708e0bbd70116b0fde92c6cdf96409392:src/edu/grinnell/callaway/JSONParser.java
 
+  /**
+   * 
+   * @param buffer
+   * @return
+   * @throws Exception
+   */
   public Object parseNull(BufferedReader buffer)
     throws Exception
   {
@@ -204,6 +249,7 @@ public class JSONParser1
         && buffer.read() == 'l')
       {
         return null;
+<<<<<<< HEAD:src/edu/grinnell/callaway/JSONParser1.java
       }//if
     else
       {
@@ -218,7 +264,21 @@ public class JSONParser1
    * @pre buffer must be "true"
    * @throws Exception
    */
+=======
+      } // if
+    else
+      {
+        throw new Exception("JSON NULL ERROR: invalid null value");
+      } // else
+  } // parseNull(BufferedReader)
+>>>>>>> a4e55d3708e0bbd70116b0fde92c6cdf96409392:src/edu/grinnell/callaway/JSONParser.java
 
+  /**
+   * 
+   * @param buffer
+   * @return
+   * @throws Exception
+   */
   public boolean parseTrue(BufferedReader buffer)
     throws Exception
   {
@@ -228,6 +288,7 @@ public class JSONParser1
         && buffer.read() == 'e')
       {
         return true;
+<<<<<<< HEAD:src/edu/grinnell/callaway/JSONParser1.java
       }//if
     else
       {
@@ -240,6 +301,19 @@ public class JSONParser1
    * Parse JSON to java boolean (false)
    * @param buffer
    * @pre buffer must be "false"
+=======
+      } // if
+    else
+      {
+        throw new Exception("JSON BOOLEAN ERROR: invalid true value");
+      } // else
+  } // parseTrue(BufferedReader)
+
+  /**
+   * 
+   * @param buffer
+   * @return
+>>>>>>> a4e55d3708e0bbd70116b0fde92c6cdf96409392:src/edu/grinnell/callaway/JSONParser.java
    * @throws Exception
    */
   public boolean parseFalse(BufferedReader buffer)
@@ -251,6 +325,7 @@ public class JSONParser1
         && buffer.read() == 's' && buffer.read() == 'e')
       {
         return false;
+<<<<<<< HEAD:src/edu/grinnell/callaway/JSONParser1.java
       }//if
     else
       {
@@ -264,6 +339,19 @@ public class JSONParser1
    * @pre buffer is 'chain'(string) of characters and must start with either '"' or '\'
    * @param buffer
    * @return Java string
+=======
+      } // if
+    else
+      {
+        throw new Exception("JSON BOOLEAN ERROR: invalid false value");
+      } // else
+  } // parseFalse(BufferedReader)
+
+  /**
+   * 
+   * @param buffer
+   * @return
+>>>>>>> a4e55d3708e0bbd70116b0fde92c6cdf96409392:src/edu/grinnell/callaway/JSONParser.java
    * @throws Exception
    */
   public String parseString(BufferedReader buffer)
@@ -297,8 +385,13 @@ public class JSONParser1
               // escape char for " or \
               // json should support \/, but java doesn't
               c = buffer.read();
-              switch (c)
+              if (c == '"' || c == '\\')
                 {
+                  builder.append((char) c);
+                } // if
+              else if (c == -1)
+                {
+<<<<<<< HEAD:src/edu/grinnell/callaway/JSONParser1.java
                   case '"':
                   case '\\':
                     builder.append((char) c);
@@ -306,6 +399,17 @@ public class JSONParser1
                   default:
                     throw new Exception(c+" not \" or \\ ");
                 }//switch(c)
+=======
+                  throw new Exception(
+                                      "JSON STRING ERROR: no closing \" before end of input");
+                }
+              else
+                {
+                  throw new Exception(
+                                      "JSON STRING ERROR: invalid escape character \\"
+                                          + c);
+                } // else
+>>>>>>> a4e55d3708e0bbd70116b0fde92c6cdf96409392:src/edu/grinnell/callaway/JSONParser.java
               break;
             case '"':
               // string is done
@@ -313,7 +417,8 @@ public class JSONParser1
               break;
             case -1:
               // reach end of json before ending string
-              throw new Exception("no closing \" before end of input");
+              throw new Exception(
+                                  "JSON STRING ERROR: no closing \" before end of input");
             default:
               // add all chars to string
               builder.append((char) c);
@@ -323,6 +428,7 @@ public class JSONParser1
     return builder.toString();
   }//String parseString(BufferedReader buffer)
 
+<<<<<<< HEAD:src/edu/grinnell/callaway/JSONParser1.java
   
   /**
    * Parse Jason Array
@@ -332,6 +438,12 @@ public class JSONParser1
    * '[' can not be followed by ','
    * @return
    * Vector
+=======
+  /**
+   * 
+   * @param buffer
+   * @return
+>>>>>>> a4e55d3708e0bbd70116b0fde92c6cdf96409392:src/edu/grinnell/callaway/JSONParser.java
    * @throws Exception
    */
   public Vector<Object> parseArray(BufferedReader buffer)
@@ -373,6 +485,7 @@ public class JSONParser1
                 }//if
               else
                 {
+<<<<<<< HEAD:src/edu/grinnell/callaway/JSONParser1.java
                   throw new Exception(" ',' not found");
                 }//else
               break;
@@ -390,6 +503,19 @@ public class JSONParser1
             case -1:
               // end of buffer before array end
               throw new Exception("Array not closed");
+=======
+                  throw new Exception(
+                                      "JSON ARRAY ERROR: missplaced comma in array list");
+                }
+              break;
+            case ']':
+              array_end = true;
+              break;
+            case -1:
+              // end of buffer before array end
+              throw new Exception(
+                                  "JSON ARRAY ERROR: no closing ] before end of input");
+>>>>>>> a4e55d3708e0bbd70116b0fde92c6cdf96409392:src/edu/grinnell/callaway/JSONParser.java
             default:
               // parse value
               buffer.reset();
@@ -402,6 +528,7 @@ public class JSONParser1
   }//parseArray(BufferedReader buffer)
 
   /**
+<<<<<<< HEAD:src/edu/grinnell/callaway/JSONParser1.java
    * Parse Jason Array
    * @param buffer
    * @pre 
@@ -412,6 +539,13 @@ public class JSONParser1
    * @throws Exception
    */
   
+=======
+   * 
+   * @param buffer
+   * @return
+   * @throws Exception
+   */
+>>>>>>> a4e55d3708e0bbd70116b0fde92c6cdf96409392:src/edu/grinnell/callaway/JSONParser.java
   public HashMap<String, Object> parseObject(BufferedReader buffer)
     throws Exception
   {
@@ -441,6 +575,7 @@ public class JSONParser1
         // if key is not found
         switch (c)
           {
+            case ',':
             case ' ':
             case '\n':
             case '\t':
@@ -458,8 +593,14 @@ public class JSONParser1
                 }//if
               else
                 {
+<<<<<<< HEAD:src/edu/grinnell/callaway/JSONParser1.java
                   throw new Exception("Precondition not met: '{' not followed by type string i.e. '\"' ");
                 }//else
+=======
+                  throw new Exception("JSON OBJECT ERROR: invalid character "
+                                      + c);
+                }
+>>>>>>> a4e55d3708e0bbd70116b0fde92c6cdf96409392:src/edu/grinnell/callaway/JSONParser.java
               break;
             case ':':
               if (key_found && !value_found)
@@ -469,24 +610,44 @@ public class JSONParser1
                 }//if
               else
                 {
+<<<<<<< HEAD:src/edu/grinnell/callaway/JSONParser1.java
                   throw new Exception("Precondition not met: type string not followed by a ':'");
                 }//else
+=======
+                  throw new Exception(
+                                      "JSON OBJECT ERROR: missplaced ':', should seperate key:value pairs");
+                }
+>>>>>>> a4e55d3708e0bbd70116b0fde92c6cdf96409392:src/edu/grinnell/callaway/JSONParser.java
               break;
             case '}':
               if (key_found)
                 {
+<<<<<<< HEAD:src/edu/grinnell/callaway/JSONParser1.java
                   throw new Exception("unresolved key value pair");
                 }//if
+=======
+                  throw new Exception(
+                                      "JSON OBJECT ERROR: unresolved key value pair");
+                }
+>>>>>>> a4e55d3708e0bbd70116b0fde92c6cdf96409392:src/edu/grinnell/callaway/JSONParser.java
               else
                 {
                   hash_end = true;
                 }//else
               break;
             case -1:
+<<<<<<< HEAD:src/edu/grinnell/callaway/JSONParser1.java
               throw new Exception("Object not closed, expected '}'");
             default:
               throw new Exception("");
           }//switch(c)
+=======
+              throw new Exception(
+                                  "JSON OBJECT ERROR: no closing } before end of input");
+            default:
+              throw new Exception("JSON OBJECT ERROR: invalid character " + c);
+          }
+>>>>>>> a4e55d3708e0bbd70116b0fde92c6cdf96409392:src/edu/grinnell/callaway/JSONParser.java
         if (key_found && value_found)
           {
             hash.put(key, value);
@@ -497,19 +658,111 @@ public class JSONParser1
     return hash;
   }//parseObject(BufferedReader buffer)
 
+<<<<<<< HEAD:src/edu/grinnell/callaway/JSONParser1.java
   
   /**
    * Experiment
    * @param args
    * @throws Exception
    */
+=======
+  /**
+   * Converts a given JSON value (in the form of a Java object) into a string
+   * 
+   * @param obj
+   * @return
+   */
+  @SuppressWarnings("unchecked")
+  public String toStr(Object obj)
+  {
+    if (obj == null)
+      return "null";
+    else if (obj.getClass().equals(HashMap.class))
+      return objToString((HashMap<String, Object>) obj);
+    else if (obj.getClass().equals(Vector.class))
+      return vecToString((Vector<?>) obj);
+    else if (obj.getClass().equals(String.class))
+      return "\"" + obj.toString() + "\"";
+    else
+      return obj.toString();
+  }
+
+  /*
+   * We got some ideas for how to get the key value from:
+   * http://stackoverflow.com/questions/10462819/get-keys-from-hashmap-in-java
+   */
+  /**
+   * Converts the key-value pairs from the given hashMap into a String
+   * 
+   * @param hash
+   * @return String
+   */
+  @SuppressWarnings("unchecked")
+  public String objToString(HashMap<String, Object> hash)
+  {
+    String str = "{";
+    for (String key : hash.keySet())
+      {
+        Object val = hash.get(key);
+        str += "\"" + key + "\":";
+
+        if (val == null)
+          str += val + ",";
+        else if (val.getClass().equals(HashMap.class))
+          str += objToString((HashMap<String, Object>) val) + ",";
+        else if (val.getClass().equals(String.class))
+          str += "\"" + val + "\",";
+        else if (val.getClass().equals(Vector.class))
+          str += vecToString((Vector<?>) val) + ",";
+        else
+          str += val + ",";
+      } // for (key)
+    str = str.substring(0, str.length() - 1) + "}";
+    return str;
+  } // toStr(HashMap)
+
+  /**
+   * Converts a vector into a string.
+   * 
+   * @param vec
+   * @return String
+   */
+  @SuppressWarnings("unchecked")
+  public String vecToString(Vector<?> vec)
+  {
+    String str = "[";
+
+    for (int i = 0; i < vec.size(); i++)
+      {
+        Object val = vec.get(i);
+
+        if (val == null)
+          str += val + ",";
+        else if (val.getClass().equals(Vector.class))
+          str += vecToString((Vector<?>) val) + ",";
+        else if (val.getClass().equals(HashMap.class))
+          str += objToString((HashMap<String, Object>) val) + ",";
+        else if (val.getClass().equals(String.class))
+          str += "\"" + val + "\",";
+        else
+          str += val + ",";
+      } // for (i)
+    str = str.substring(0, str.length() - 1) + "]";
+    return str;
+  } // vecToString(Vector)
+
+>>>>>>> a4e55d3708e0bbd70116b0fde92c6cdf96409392:src/edu/grinnell/callaway/JSONParser.java
   public static void main(String[] args)
     throws Exception
   {
-    JSONParser1 parser = new JSONParser1();
+    JSONParser parser = new JSONParser();
     ToString str = new ToString();
+<<<<<<< HEAD:src/edu/grinnell/callaway/JSONParser1.java
     Object val =
         parser.parse("{ \"test\":false \"One\":2 \"obJ\":{ \"1\":1e34 } \"arr\":[ 1, 2, 3, true, null ] }");
+=======
+    Object val = parser.parse("[ 1 2 3 ]");
+>>>>>>> a4e55d3708e0bbd70116b0fde92c6cdf96409392:src/edu/grinnell/callaway/JSONParser.java
     System.out.println(str.toStr(val));
   }//main(string[]
 }//JSONParse1
