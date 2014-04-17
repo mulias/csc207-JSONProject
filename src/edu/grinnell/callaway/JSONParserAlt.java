@@ -479,7 +479,7 @@ public class JSONParserAlt
   {
     JSONParserAlt parser = new JSONParserAlt();
     JSONValue val =
-        parser.parse("\"t,est\"");
+        parser.parse("{ \"1\":2 \"3\":2 \"5\":2333 }");
     System.out.println(val.toJSON());
   }
 }
