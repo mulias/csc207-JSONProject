@@ -1,7 +1,6 @@
 package edu.grinnell.callaway;
 
 import static org.junit.Assert.*;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Vector;
