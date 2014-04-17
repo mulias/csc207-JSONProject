@@ -103,10 +103,10 @@ public class JSONParserAlt
               break;
             // otherwise error
             default:
-              throw new Exception("1");
+              throw new Exception("JSON ERROR: Invalid input character " + c);
           } // switch(c)
       } // while (!buffer_end)
-    throw new Exception("2");
+    throw new Exception("JSON ERROR: no json values found in input");
   } // parse(BufferedReader)
 
   /**
@@ -156,13 +156,14 @@ public class JSONParserAlt
               break;
           } // switch (n)
       } // while (!num_end)
+    String number = builder.toString();
     try
       {
-        return new JSONNumber(builder.toString());
+        return new JSONNumber(number);
       } // try
     catch (NumberFormatException e)
       {
-        throw new Exception("3 " + e);
+        throw new Exception("JSON NUMBER ERROR: invalid number" + number);
       } // catch
   } // parseNum(BufferedReader)
 
@@ -184,7 +185,7 @@ public class JSONParserAlt
       } // if
     else
       {
-        throw new Exception("4");
+        throw new Exception("JSON NULL ERROR: invalid null value");
       } // else
   } // parseNull(BufferedReader)
 
@@ -206,7 +207,7 @@ public class JSONParserAlt
       } // if
     else
       {
-        throw new Exception("5");
+        throw new Exception("JSON BOOLEAN ERROR: invalid true value");
       } // else
   } // parseTrue(BufferedReader)
 
@@ -228,7 +229,7 @@ public class JSONParserAlt
       } // if
     else
       {
-        throw new Exception("");
+        throw new Exception("JSON BOOLEAN ERROR: invalid false value");
       } // else
   } // parseFalse(BufferedReader)
 
@@ -273,9 +274,16 @@ public class JSONParserAlt
                 {
                   builder.append((char) c);
                 } // if
+              else if (c == -1)
+                {
+                  throw new Exception(
+                                      "JSON STRING ERROR: no closing \" before end of input");
+                }
               else
                 {
-                  throw new Exception("");
+                  throw new Exception(
+                                      "JSON STRING ERROR: invalid escape character \\"
+                                          + c);
                 } // else
               break;
             case '"':
@@ -284,7 +292,8 @@ public class JSONParserAlt
               break;
             case -1:
               // reach end of json before ending string
-              throw new Exception("no closing \" before end of input");
+              throw new Exception(
+                                  "JSON STRING ERROR: no closing \" before end of input");
             default:
               // add all chars to string
               builder.append((char) c);
@@ -339,7 +348,8 @@ public class JSONParserAlt
                 }
               else
                 {
-                  throw new Exception("");
+                  throw new Exception(
+                                      "JSON ARRAY ERROR: missplaced comma in array list");
                 }
               break;
             case ']':
@@ -355,7 +365,8 @@ public class JSONParserAlt
               break;
             case -1:
               // end of buffer before array end
-              throw new Exception("");
+              throw new Exception(
+                                  "JSON ARRAY ERROR: no closing ] before end of input");
             default:
               // parse value
               buffer.reset();
@@ -420,7 +431,8 @@ public class JSONParserAlt
                 }
               else
                 {
-                  throw new Exception("");
+                  throw new Exception("JSON OBJECT ERROR: invalid character "
+                                      + c);
                 }
               break;
             case ':':
@@ -431,13 +443,15 @@ public class JSONParserAlt
                 }
               else
                 {
-                  throw new Exception("");
+                  throw new Exception(
+                                      "JSON OBJECT ERROR: missplaced ':', should seperate key:value pairs");
                 }
               break;
             case '}':
               if (key_found)
                 {
-                  throw new Exception("unresolved key value pair");
+                  throw new Exception(
+                                      "JSON OBJECT ERROR: unresolved key value pair");
                 }
               else
                 {
@@ -445,9 +459,10 @@ public class JSONParserAlt
                 }
               break;
             case -1:
-              throw new Exception("");
+              throw new Exception(
+                                  "JSON OBJECT ERROR: no closing } before end of input");
             default:
-              throw new Exception("");
+              throw new Exception("JSON OBJECT ERROR: invalid character " + c);
           }
         if (key_found && value_found)
           {
@@ -464,7 +479,7 @@ public class JSONParserAlt
   {
     JSONParserAlt parser = new JSONParserAlt();
     JSONValue val =
-        parser.parse("{ \"test\":false \t \"One\":2 \"obJ\"    :{ \"1\":1e34 } \"arr\":\n[ 1, 2, 3, true, null ] } true");
+        parser.parse("\"t,est\"");
     System.out.println(val.toJSON());
   }
 }
