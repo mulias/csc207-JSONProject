@@ -1,6 +1,7 @@
 package edu.grinnell.callaway;
 
 import static org.junit.Assert.*;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Vector;
@@ -27,11 +28,10 @@ public class JSONTester
     assertEquals("4. enum", "2.3E35", str.toStr(23e34));
     assertEquals("5. null", "null", str.toStr(null));
     assertEquals("6. string", "\"a string\"", str.toStr("a string"));
-  } // toStrTestVals()
+  } // toStrTestVals
 
   /**
    * Test Objects and Vectors with toStr
-   * 
    * @throws Exception
    */
   @Test
@@ -79,13 +79,8 @@ public class JSONTester
                      + "\"j\":[[1,2,{\"y\":2.7E-4,\"x\":\"it\"}],2],"
                      + "\"b\":2.7E-4," + "\"c\":\"The\"," + "\"a\":true}",
                  str.toStr(hash));
-  } // toStrTestObVec()
+  } // toStrTestObVec
 
-  /**
-   * Test the parser
-   * 
-   * @throws Exception
-   */
   @Test
   public void parseTest()
     throws Exception
@@ -106,7 +101,7 @@ public class JSONTester
     assertEquals("8. false", "false", str.toStr(parser.parse("false")));
     assertEquals("9. negative", "-3.4", str.toStr(parser.parse("-3.4")));
 
-    assertEquals("5. things within things",
+    assertEquals("10. things within things",
                  "{\"f\":{\"y\":2.9E+57,\"x\":\"it\"},"
                      + "\"e\":null,\"c\":\"The\",\"j\":[1,2]}",
                  str.toStr(parser.parse("{\"f\":{\"y\":29e56,\"x\":\"it\"},"
