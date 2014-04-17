@@ -92,10 +92,10 @@ public class JSONParser1
             // otherwise error
             default:
               throw new Exception("1");
-          }
-      }
+          } // switch(c)
+      } // while (!buffer_end)
     throw new Exception("2");
-  }
+  } // parse(BufferedReader)
 
   public BigDecimal parseNum(BufferedReader buffer)
     throws Exception
@@ -136,17 +136,17 @@ public class JSONParser1
               num_end = true;
               buffer.reset();
               break;
-          }
-      }
+          } // switch (n)
+      } // while (!num_end)
     try
       {
         return new BigDecimal(builder.toString());
-      }
+      } // try
     catch (NumberFormatException e)
       {
         throw new Exception("3 " + e);
-      }
-  }
+      } // catch
+  } // parseNum(BufferedReader)
 
   public Object parseNull(BufferedReader buffer)
     throws Exception
@@ -157,12 +157,12 @@ public class JSONParser1
         && buffer.read() == 'l')
       {
         return null;
-      }
+      } // if
     else
       {
         throw new Exception("4");
-      }
-  }
+      } // else
+  } // parseNull(BufferedReader)
 
   public boolean parseTrue(BufferedReader buffer)
     throws Exception
@@ -173,12 +173,12 @@ public class JSONParser1
         && buffer.read() == 'e')
       {
         return true;
-      }
+      } // if
     else
       {
         throw new Exception("5");
-      }
-  }
+      } // else
+  } // parseTrue(BufferedReader)
 
   public boolean parseFalse(BufferedReader buffer)
     throws Exception
@@ -189,12 +189,12 @@ public class JSONParser1
         && buffer.read() == 's' && buffer.read() == 'e')
       {
         return false;
-      }
+      } // if
     else
       {
         throw new Exception("");
-      }
-  }
+      } // else
+  } // parseFalse(BufferedReader)
 
   public String parseString(BufferedReader buffer)
     throws Exception
@@ -227,15 +227,14 @@ public class JSONParser1
               // escape char for " or \
               // json should support \/, but java doesn't
               c = buffer.read();
-              switch (c)
+              if (c == '"' || c == '\\')
                 {
-                  case '"':
-                  case '\\':
-                    builder.append((char) c);
-                    break;
-                  default:
-                    throw new Exception("");
-                }
+                  builder.append((char) c);
+                } // if
+              else
+                {
+                  throw new Exception("");
+                } // else
               break;
             case '"':
               // string is done
