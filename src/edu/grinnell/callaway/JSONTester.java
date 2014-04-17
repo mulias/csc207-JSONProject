@@ -13,6 +13,11 @@ public class JSONTester
   JSONParser parser = new JSONParser();
   ToString str = new ToString();
 
+  /**
+   * Test the individual values with toStr
+   * 
+   * @throws Exception
+   */
   @Test
   public void toStrTestVals()
     throws Exception
@@ -23,8 +28,13 @@ public class JSONTester
     assertEquals("4. enum", "2.3E35", str.toStr(23e34));
     assertEquals("5. null", "null", str.toStr(null));
     assertEquals("6. string", "\"a string\"", str.toStr("a string"));
-  } // toStrTestVals
+  } // toStrTestVals()
 
+  /**
+   * Test Objects and Vectors with toStr
+   * 
+   * @throws Exception
+   */
   @Test
   public void toStrTestObVec()
     throws Exception
@@ -64,17 +74,30 @@ public class JSONTester
     hash.put("f", hmap);
 
     assertEquals("5. things within things",
-                 "{\"f\":{\"y\":2.7E-4,\"x\":\"it\"},\"d\":[1,2,{\"y\":2.7E-4,\"x\":\"it\"}],\"e\":null,\"j\":[[1,2,{\"y\":2.7E-4,\"x\":\"it\"}],2],\"b\":2.7E-4,\"c\":\"The\",\"a\":true}",
+                 "{\"f\":{\"y\":2.7E-4," + "\"x\":\"it\"},"
+                     + "\"d\":[1,2,{\"y\":2.7E-4,\"x\":\"it\"}],"
+                     + "\"e\":null,"
+                     + "\"j\":[[1,2,{\"y\":2.7E-4,\"x\":\"it\"}],2],"
+                     + "\"b\":2.7E-4," + "\"c\":\"The\"," + "\"a\":true}",
                  str.toStr(hash));
-  } // toStrTestObVec
+  } // toStrTestObVec()
 
+  /**
+   * Test the parser
+   * 
+   * @throws Exception
+   */
   @Test
   public void parseTest()
     throws Exception
   {
     assertEquals("1. JSON string",
-                 "{\"Pro\":{\"FName\":\"Sam\",\"LName\":\"Rebelsky\"},\"Number\":207,\"Department\":\"CSC\"}",
-                 str.toStr(parser.parse("{\"Department\":\"CSC\", \"Number\":207, \"Pro\":{\"LName\":\"Rebelsky\",\"FName\":\"Sam\"}}")));
+                 "{\"Pro\":{\"FName\":\"Sam\",\"LName\":\"Rebelsky\"},"
+                     + "\"Number\":207,\"Department\":\"CSC\"}",
+                 str.toStr(parser.parse("{\"Department\":\"CSC\","
+                                        + " \"Number\":207, "
+                                        + "\"Pro\":{\"LName\":\"Rebelsky\","
+                                        + "\"FName\":\"Sam\"}}")));
     assertEquals("2. array", "[1,2,3]", str.toStr(parser.parse("[1,2,3]")));
     assertEquals("3. number", "34", str.toStr(parser.parse("34")));
     assertEquals("4. decimal", "34.6", str.toStr(parser.parse("34.6")));
@@ -82,5 +105,12 @@ public class JSONTester
     assertEquals("6. null", "null", str.toStr(parser.parse("null")));
     assertEquals("7. true", "true", str.toStr(parser.parse("true")));
     assertEquals("8. false", "false", str.toStr(parser.parse("false")));
-  }
+    assertEquals("9. negative", "-3.4", str.toStr(parser.parse("-3.4")));
+
+    assertEquals("5. things within things",
+                 "{\"f\":{\"y\":2.9E+57,\"x\":\"it\"},"
+                     + "\"e\":null,\"c\":\"The\",\"j\":[1,2]}",
+                 str.toStr(parser.parse("{\"f\":{\"y\":29e56,\"x\":\"it\"},"
+                                        + "\"e\":null,\"j\":[1,2],\"c\":\"The\"}")));
+  } // parseTest()
 } // class JSONTester
