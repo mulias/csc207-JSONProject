@@ -16,14 +16,6 @@ public class JSONParserAlt
 {
   /**
    * 
-   */
-  public JSONParserAlt()
-  {
-
-  }
-
-  /**
-   * 
    * @param str
    * @return
    * @throws Exception
