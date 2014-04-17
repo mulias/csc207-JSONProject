@@ -6,14 +6,11 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Vector;
 
-public class JSONParser1
+import edu.grinnell.callaway.jsonvalues.JSONString;
+import edu.grinnell.callaway.jsonvalues.JSONValue;
+
+public class JSONParser
 {
-
-  public JSONParser1()
-  {
-
-  }
-
   public Object parse(String str)
     throws Exception
   {
@@ -349,6 +346,7 @@ public class JSONParser1
         // if key is not found
         switch (c)
           {
+            case ',':
             case ' ':
             case '\n':
             case '\t':
@@ -405,12 +403,98 @@ public class JSONParser1
     return hash;
   }
 
+  /**
+   * Converts a given JSON value (in the form of a Java object) into a string
+   * 
+   * @param obj
+   * @return
+   */
+  @SuppressWarnings("unchecked")
+  public String toStr(Object obj)
+  {
+    if (obj == null)
+      return "null";
+    else if (obj.getClass().equals(HashMap.class))
+      return objToString((HashMap<String, Object>) obj);
+    else if (obj.getClass().equals(Vector.class))
+      return vecToString((Vector<?>) obj);
+    else if (obj.getClass().equals(String.class))
+      return "\"" + obj.toString() + "\"";
+    else
+      return obj.toString();
+  }
+
+  /*
+   * We got some ideas for how to get the key value from:
+   * http://stackoverflow.com/questions/10462819/get-keys-from-hashmap-in-java
+   */
+  /**
+   * Converts the key-value pairs from the given hashMap into a String
+   * 
+   * @param hash
+   * @return String
+   */
+  @SuppressWarnings("unchecked")
+  public String objToString(HashMap<String, Object> hash)
+  {
+    String str = "{";
+    for (String key : hash.keySet())
+      {
+        Object val = hash.get(key);
+        str += "\"" + key + "\":";
+
+        if (val == null)
+          str += val + ",";
+        else if (val.getClass().equals(HashMap.class))
+          str += objToString((HashMap<String, Object>) val) + ",";
+        else if (val.getClass().equals(String.class))
+          str += "\"" + val + "\",";
+        else if (val.getClass().equals(Vector.class))
+          str += vecToString((Vector<?>) val) + ",";
+        else
+          str += val + ",";
+      } // for (key)
+    str = str.substring(0, str.length() - 1) + "}";
+    return str;
+  } // toStr(HashMap)
+
+  /**
+   * Converts a vector into a string.
+   * 
+   * @param vec
+   * @return String
+   */
+  @SuppressWarnings("unchecked")
+  public String vecToString(Vector<?> vec)
+  {
+    String str = "[";
+
+    for (int i = 0; i < vec.size(); i++)
+      {
+        Object val = vec.get(i);
+
+        if (val == null)
+          str += val + ",";
+        else if (val.getClass().equals(Vector.class))
+          str += vecToString((Vector<?>) val) + ",";
+        else if (val.getClass().equals(HashMap.class))
+          str += objToString((HashMap<String, Object>) val) + ",";
+        else if (val.getClass().equals(String.class))
+          str += "\"" + val + "\",";
+        else
+          str += val + ",";
+      } // for (i)
+    str = str.substring(0, str.length() - 1) + "]";
+    return str;
+  } // vecToString(Vector)
+
   public static void main(String[] args)
     throws Exception
   {
-    JSONParser1 parser = new JSONParser1();
+    JSONParser parser = new JSONParser();
     ToString str = new ToString();
-    Object val = parser.parse("{ \"test\":false \"One\":2 \"obJ\":{ \"1\":1e34 } \"arr\":[ 1, 2, 3, true, null ] }");
+    Object val =
+        parser.parse("{ \"test\":false \"One\":2 \"obJ\":{ \"1\":1e34 } \"arr\":[ 1, 2, 3, true, null ] }");
     System.out.println(str.toStr(val));
   }
 }

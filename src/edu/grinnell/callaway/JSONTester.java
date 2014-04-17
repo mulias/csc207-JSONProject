@@ -10,7 +10,7 @@ import org.junit.Test;
 
 public class JSONTester
 {
-  JSONParser1 parser1 = new JSONParser1();
+  JSONParser parser1 = new JSONParser();
   ToString str = new ToString();
 
   @Test

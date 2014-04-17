@@ -12,12 +12,12 @@ import edu.grinnell.callaway.jsonvalues.JSONString;
 import edu.grinnell.callaway.jsonvalues.JSONBoolean;
 import edu.grinnell.callaway.jsonvalues.JSONValue;
 
-public class JSONParser2
+public class JSONParserAlt
 {
   /**
    * 
    */
-  public JSONParser2()
+  public JSONParserAlt()
   {
 
   }
@@ -470,7 +470,7 @@ public class JSONParser2
   public static void main(String[] args)
     throws Exception
   {
-    JSONParser2 parser = new JSONParser2();
+    JSONParserAlt parser = new JSONParserAlt();
     JSONValue val =
         parser.parse("{ \"test\":false \t \"One\":2 \"obJ\"    :{ \"1\":1e34 } \"arr\":\n[ 1, 2, 3, true, null ] } true");
     System.out.println(val.toJSON());
