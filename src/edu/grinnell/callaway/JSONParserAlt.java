@@ -2,33 +2,30 @@ package edu.grinnell.callaway;
 
 import java.io.BufferedReader;
 import java.io.StringReader;
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Vector;
+import edu.grinnell.callaway.jsonvalues.JSONArray;
+import edu.grinnell.callaway.jsonvalues.JSONNull;
+import edu.grinnell.callaway.jsonvalues.JSONNumber;
+import edu.grinnell.callaway.jsonvalues.JSONObject;
+import edu.grinnell.callaway.jsonvalues.JSONString;
+import edu.grinnell.callaway.jsonvalues.JSONBoolean;
+import edu.grinnell.callaway.jsonvalues.JSONValue;
 
-public class JSONParser1
+public class JSONParserAlt
 {
-
-  /**
-   *
-   */
-  public JSONParser1()
-  {
-
-  }
-
   /**
    * 
    * @param str
    * @return
    * @throws Exception
    */
-  public Object parse(String str)
+  public JSONValue parse(String str)
     throws Exception
   {
     BufferedReader text = new BufferedReader(new StringReader(str));
     return this.parse(text);
-  }
+  } // JSONValue parse(String)
 
   /**
    * 
@@ -36,15 +33,15 @@ public class JSONParser1
    * @return
    * @throws Exception
    */
-  public Object parse(BufferedReader buffer)
+  public JSONValue parse(BufferedReader buffer)
     throws Exception
   {
     // mark each space in buffer before advancing one
     // advance through each char in buffer
     // ignore whitespace
-    // if char signals the opener of a Object, such as {, [, or "
+    // if char signals the opener of a JSONValue, such as {, [, or "
     // // parse that object starting at the next char
-    // if char is the first char in a Object, such as t in true or 1 in 125
+    // if char is the first char in a JSONValue, such as t in true or 1 in 125
     // // use the mark to back up one char and then parse the object
     // if the end of the buffer is reached before an object is found
     // // throw exception
@@ -106,10 +103,10 @@ public class JSONParser1
               break;
             // otherwise error
             default:
-              throw new Exception("JSON ERROR: Invalid character " + c);
+              throw new Exception("1");
           } // switch(c)
       } // while (!buffer_end)
-    throw new Exception("JSON ERROR: no json values found in string");
+    throw new Exception("2");
   } // parse(BufferedReader)
 
   /**
@@ -118,7 +115,7 @@ public class JSONParser1
    * @return
    * @throws Exception
    */
-  public BigDecimal parseNum(BufferedReader buffer)
+  public JSONNumber parseNum(BufferedReader buffer)
     throws Exception
   {
     // use a StringBuilder to stick nums together
@@ -161,11 +158,11 @@ public class JSONParser1
       } // while (!num_end)
     try
       {
-        return new BigDecimal(builder.toString());
+        return new JSONNumber(builder.toString());
       } // try
     catch (NumberFormatException e)
       {
-        throw new Exception("3 " + );
+        throw new Exception("3 " + e);
       } // catch
   } // parseNum(BufferedReader)
 
@@ -175,7 +172,7 @@ public class JSONParser1
    * @return
    * @throws Exception
    */
-  public Object parseNull(BufferedReader buffer)
+  public JSONNull parseNull(BufferedReader buffer)
     throws Exception
   {
     // if the next chars spell out 'null', return null
@@ -183,7 +180,7 @@ public class JSONParser1
     if (buffer.read() == 'n' && buffer.read() == 'u' && buffer.read() == 'l'
         && buffer.read() == 'l')
       {
-        return null;
+        return new JSONNull();
       } // if
     else
       {
@@ -197,7 +194,7 @@ public class JSONParser1
    * @return
    * @throws Exception
    */
-  public boolean parseTrue(BufferedReader buffer)
+  public JSONBoolean parseTrue(BufferedReader buffer)
     throws Exception
   {
     // if the next chars spell out 'true', return true
@@ -205,7 +202,7 @@ public class JSONParser1
     if (buffer.read() == 't' && buffer.read() == 'r' && buffer.read() == 'u'
         && buffer.read() == 'e')
       {
-        return true;
+        return new JSONBoolean(true);
       } // if
     else
       {
@@ -219,7 +216,7 @@ public class JSONParser1
    * @return
    * @throws Exception
    */
-  public boolean parseFalse(BufferedReader buffer)
+  public JSONBoolean parseFalse(BufferedReader buffer)
     throws Exception
   {
     // if the next chars spell out 'true', return true
@@ -227,7 +224,7 @@ public class JSONParser1
     if (buffer.read() == 'f' && buffer.read() == 'a' && buffer.read() == 'l'
         && buffer.read() == 's' && buffer.read() == 'e')
       {
-        return false;
+        return new JSONBoolean(false);
       } // if
     else
       {
@@ -241,7 +238,7 @@ public class JSONParser1
    * @return
    * @throws Exception
    */
-  public String parseString(BufferedReader buffer)
+  public JSONString parseString(BufferedReader buffer)
     throws Exception
   {
     // save each char to a StringBuilder
@@ -294,7 +291,7 @@ public class JSONParser1
               break;
           }
       }
-    return builder.toString();
+    return new JSONString(builder.toString());
   }
 
   /**
@@ -303,7 +300,7 @@ public class JSONParser1
    * @return
    * @throws Exception
    */
-  public Vector<Object> parseArray(BufferedReader buffer)
+  public JSONArray parseArray(BufferedReader buffer)
     throws Exception
   {
     // save values in array to a vector
@@ -317,7 +314,7 @@ public class JSONParser1
     // // search for new value
     // if end of buffer
     // // throw exception
-    Vector<Object> vec = new Vector<Object>();
+    Vector<JSONValue> vec = new Vector<JSONValue>();
     boolean array_end = false;
     boolean value_found = false;
     while (!array_end)
@@ -367,7 +364,7 @@ public class JSONParser1
               break;
           }
       }
-    return vec;
+    return new JSONArray(vec);
   }
 
   /**
@@ -376,7 +373,7 @@ public class JSONParser1
    * @return
    * @throws Exception
    */
-  public HashMap<String, Object> parseObject(BufferedReader buffer)
+  public JSONObject parseObject(BufferedReader buffer)
     throws Exception
   {
     // save values in object to a HashMap
@@ -392,12 +389,12 @@ public class JSONParser1
     // // look for new pair
     // if end of buffer
     // // throw exception
-    HashMap<String, Object> hash = new HashMap<String, Object>();
+    HashMap<JSONString, JSONValue> hash = new HashMap<JSONString, JSONValue>();
     boolean key_found = false;
     boolean value_found = false;
     boolean hash_end = false;
-    String key = null;
-    Object value = null;
+    JSONString key = null;
+    JSONValue value = null;
     while (!hash_end)
       {
         buffer.mark(1);
@@ -418,7 +415,7 @@ public class JSONParser1
               if (!key_found)
                 {
                   buffer.reset();
-                  key = (String) parse(buffer);
+                  key = (JSONString) parse(buffer);
                   key_found = true;
                 }
               else
@@ -459,15 +456,15 @@ public class JSONParser1
             value_found = false;
           }
       }
-    return hash;
+    return new JSONObject(hash);
   }
 
   public static void main(String[] args)
     throws Exception
   {
-    JSONParser1 parser = new JSONParser1();
-    ToString str = new ToString();
-    Object val = parser.parse(".e4");
-    System.out.println(str.toStr(val));
+    JSONParserAlt parser = new JSONParserAlt();
+    JSONValue val =
+        parser.parse("{ \"test\":false \t \"One\":2 \"obJ\"    :{ \"1\":1e34 } \"arr\":\n[ 1, 2, 3, true, null ] } true");
+    System.out.println(val.toJSON());
   }
 }

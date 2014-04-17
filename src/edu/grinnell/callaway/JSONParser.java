@@ -2,38 +2,18 @@ package edu.grinnell.callaway;
 
 import java.io.BufferedReader;
 import java.io.StringReader;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Vector;
-import edu.grinnell.callaway.jsonvalues.JSONArray;
-import edu.grinnell.callaway.jsonvalues.JSONNull;
-import edu.grinnell.callaway.jsonvalues.JSONNumber;
-import edu.grinnell.callaway.jsonvalues.JSONObject;
-import edu.grinnell.callaway.jsonvalues.JSONString;
-import edu.grinnell.callaway.jsonvalues.JSONBoolean;
-import edu.grinnell.callaway.jsonvalues.JSONValue;
 
-public class JSONParser2
+public class JSONParser
 {
-  /**
-   * 
-   */
-  public JSONParser2()
-  {
-
-  }
-
-  /**
-   * 
-   * @param str
-   * @return
-   * @throws Exception
-   */
-  public JSONValue parse(String str)
+  public Object parse(String str)
     throws Exception
   {
     BufferedReader text = new BufferedReader(new StringReader(str));
     return this.parse(text);
-  } // JSONValue parse(String)
+  }
 
   /**
    * 
@@ -41,15 +21,15 @@ public class JSONParser2
    * @return
    * @throws Exception
    */
-  public JSONValue parse(BufferedReader buffer)
+  public Object parse(BufferedReader buffer)
     throws Exception
   {
     // mark each space in buffer before advancing one
     // advance through each char in buffer
     // ignore whitespace
-    // if char signals the opener of a JSONValue, such as {, [, or "
+    // if char signals the opener of a Object, such as {, [, or "
     // // parse that object starting at the next char
-    // if char is the first char in a JSONValue, such as t in true or 1 in 125
+    // if char is the first char in a Object, such as t in true or 1 in 125
     // // use the mark to back up one char and then parse the object
     // if the end of the buffer is reached before an object is found
     // // throw exception
@@ -111,10 +91,10 @@ public class JSONParser2
               break;
             // otherwise error
             default:
-              throw new Exception("1");
+              throw new Exception("JSON ERROR: Invalid character " + c);
           } // switch(c)
       } // while (!buffer_end)
-    throw new Exception("2");
+    throw new Exception("JSON ERROR: no json values found in string");
   } // parse(BufferedReader)
 
   /**
@@ -123,7 +103,7 @@ public class JSONParser2
    * @return
    * @throws Exception
    */
-  public JSONNumber parseNum(BufferedReader buffer)
+  public BigDecimal parseNum(BufferedReader buffer)
     throws Exception
   {
     // use a StringBuilder to stick nums together
@@ -166,7 +146,7 @@ public class JSONParser2
       } // while (!num_end)
     try
       {
-        return new JSONNumber(builder.toString());
+        return new BigDecimal(builder.toString());
       } // try
     catch (NumberFormatException e)
       {
@@ -180,7 +160,7 @@ public class JSONParser2
    * @return
    * @throws Exception
    */
-  public JSONNull parseNull(BufferedReader buffer)
+  public Object parseNull(BufferedReader buffer)
     throws Exception
   {
     // if the next chars spell out 'null', return null
@@ -188,7 +168,7 @@ public class JSONParser2
     if (buffer.read() == 'n' && buffer.read() == 'u' && buffer.read() == 'l'
         && buffer.read() == 'l')
       {
-        return new JSONNull();
+        return null;
       } // if
     else
       {
@@ -202,7 +182,7 @@ public class JSONParser2
    * @return
    * @throws Exception
    */
-  public JSONBoolean parseTrue(BufferedReader buffer)
+  public boolean parseTrue(BufferedReader buffer)
     throws Exception
   {
     // if the next chars spell out 'true', return true
@@ -210,7 +190,7 @@ public class JSONParser2
     if (buffer.read() == 't' && buffer.read() == 'r' && buffer.read() == 'u'
         && buffer.read() == 'e')
       {
-        return new JSONBoolean(true);
+        return true;
       } // if
     else
       {
@@ -224,7 +204,7 @@ public class JSONParser2
    * @return
    * @throws Exception
    */
-  public JSONBoolean parseFalse(BufferedReader buffer)
+  public boolean parseFalse(BufferedReader buffer)
     throws Exception
   {
     // if the next chars spell out 'true', return true
@@ -232,7 +212,7 @@ public class JSONParser2
     if (buffer.read() == 'f' && buffer.read() == 'a' && buffer.read() == 'l'
         && buffer.read() == 's' && buffer.read() == 'e')
       {
-        return new JSONBoolean(false);
+        return false;
       } // if
     else
       {
@@ -246,7 +226,7 @@ public class JSONParser2
    * @return
    * @throws Exception
    */
-  public JSONString parseString(BufferedReader buffer)
+  public String parseString(BufferedReader buffer)
     throws Exception
   {
     // save each char to a StringBuilder
@@ -299,7 +279,7 @@ public class JSONParser2
               break;
           }
       }
-    return new JSONString(builder.toString());
+    return builder.toString();
   }
 
   /**
@@ -308,7 +288,7 @@ public class JSONParser2
    * @return
    * @throws Exception
    */
-  public JSONArray parseArray(BufferedReader buffer)
+  public Vector<Object> parseArray(BufferedReader buffer)
     throws Exception
   {
     // save values in array to a vector
@@ -322,7 +302,7 @@ public class JSONParser2
     // // search for new value
     // if end of buffer
     // // throw exception
-    Vector<JSONValue> vec = new Vector<JSONValue>();
+    Vector<Object> vec = new Vector<Object>();
     boolean array_end = false;
     boolean value_found = false;
     while (!array_end)
@@ -372,7 +352,7 @@ public class JSONParser2
               break;
           }
       }
-    return new JSONArray(vec);
+    return vec;
   }
 
   /**
@@ -381,7 +361,7 @@ public class JSONParser2
    * @return
    * @throws Exception
    */
-  public JSONObject parseObject(BufferedReader buffer)
+  public HashMap<String, Object> parseObject(BufferedReader buffer)
     throws Exception
   {
     // save values in object to a HashMap
@@ -397,12 +377,12 @@ public class JSONParser2
     // // look for new pair
     // if end of buffer
     // // throw exception
-    HashMap<JSONString, JSONValue> hash = new HashMap<JSONString, JSONValue>();
+    HashMap<String, Object> hash = new HashMap<String, Object>();
     boolean key_found = false;
     boolean value_found = false;
     boolean hash_end = false;
-    JSONString key = null;
-    JSONValue value = null;
+    String key = null;
+    Object value = null;
     while (!hash_end)
       {
         buffer.mark(1);
@@ -423,7 +403,7 @@ public class JSONParser2
               if (!key_found)
                 {
                   buffer.reset();
-                  key = (JSONString) parse(buffer);
+                  key = (String) parse(buffer);
                   key_found = true;
                 }
               else
@@ -464,15 +444,100 @@ public class JSONParser2
             value_found = false;
           }
       }
-    return new JSONObject(hash);
+    return hash;
   }
+
+  /**
+   * Converts a given JSON value (in the form of a Java object) into a string
+   * 
+   * @param obj
+   * @return
+   */
+  @SuppressWarnings("unchecked")
+  public String toStr(Object obj)
+  {
+    if (obj == null)
+      return "null";
+    else if (obj.getClass().equals(HashMap.class))
+      return objToString((HashMap<String, Object>) obj);
+    else if (obj.getClass().equals(Vector.class))
+      return vecToString((Vector<?>) obj);
+    else if (obj.getClass().equals(String.class))
+      return "\"" + obj.toString() + "\"";
+    else
+      return obj.toString();
+  }
+
+  /*
+   * We got some ideas for how to get the key value from:
+   * http://stackoverflow.com/questions/10462819/get-keys-from-hashmap-in-java
+   */
+  /**
+   * Converts the key-value pairs from the given hashMap into a String
+   * 
+   * @param hash
+   * @return String
+   */
+  @SuppressWarnings("unchecked")
+  public String objToString(HashMap<String, Object> hash)
+  {
+    String str = "{";
+    for (String key : hash.keySet())
+      {
+        Object val = hash.get(key);
+        str += "\"" + key + "\":";
+
+        if (val == null)
+          str += val + ",";
+        else if (val.getClass().equals(HashMap.class))
+          str += objToString((HashMap<String, Object>) val) + ",";
+        else if (val.getClass().equals(String.class))
+          str += "\"" + val + "\",";
+        else if (val.getClass().equals(Vector.class))
+          str += vecToString((Vector<?>) val) + ",";
+        else
+          str += val + ",";
+      } // for (key)
+    str = str.substring(0, str.length() - 1) + "}";
+    return str;
+  } // toStr(HashMap)
+
+  /**
+   * Converts a vector into a string.
+   * 
+   * @param vec
+   * @return String
+   */
+  @SuppressWarnings("unchecked")
+  public String vecToString(Vector<?> vec)
+  {
+    String str = "[";
+
+    for (int i = 0; i < vec.size(); i++)
+      {
+        Object val = vec.get(i);
+
+        if (val == null)
+          str += val + ",";
+        else if (val.getClass().equals(Vector.class))
+          str += vecToString((Vector<?>) val) + ",";
+        else if (val.getClass().equals(HashMap.class))
+          str += objToString((HashMap<String, Object>) val) + ",";
+        else if (val.getClass().equals(String.class))
+          str += "\"" + val + "\",";
+        else
+          str += val + ",";
+      } // for (i)
+    str = str.substring(0, str.length() - 1) + "]";
+    return str;
+  } // vecToString(Vector)
 
   public static void main(String[] args)
     throws Exception
   {
-    JSONParser2 parser = new JSONParser2();
-    JSONValue val =
-        parser.parse("{ \"test\":false \t \"One\":2 \"obJ\"    :{ \"1\":1e34 } \"arr\":\n[ 1, 2, 3, true, null ] } true");
-    System.out.println(val.toJSON());
+    JSONParser parser = new JSONParser();
+    ToString str = new ToString();
+    Object val = parser.parse(".e4");
+    System.out.println(str.toStr(val));
   }
 }
