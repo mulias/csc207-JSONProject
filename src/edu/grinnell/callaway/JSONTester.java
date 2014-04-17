@@ -63,8 +63,13 @@ public class JSONTester
     hash.put("e", null);
     hash.put("f", hmap);
 
-    assertEquals("5. things within things",
-                 "{\"f\":{\"y\":2.7E-4,\"x\":\"it\"},\"d\":[1,2,{\"y\":2.7E-4,\"x\":\"it\"}],\"e\":null,\"j\":[[1,2,{\"y\":2.7E-4,\"x\":\"it\"}],2],\"b\":2.7E-4,\"c\":\"The\",\"a\":true}",
-                 str.toStr(hash));
+    assertEquals("5. things within things","{\"f\":{\"y\":2.7E-4,\"x\":\"it\"},\"d\":[1,2,{\"y\":2.7E-4,\"x\":\"it\"}],\"e\":null,\"j\":[[1,2,{\"y\":2.7E-4,\"x\":\"it\"}],2],\"b\":2.7E-4,\"c\":\"The\",\"a\":true}",str.toStr(hash));
   } // toStrTestObVec
+  
+  @Test
+  public void parseTest(){
+    
+  }
+  
+  
 } // class JSONTester

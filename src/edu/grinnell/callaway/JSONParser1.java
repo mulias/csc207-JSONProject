@@ -6,6 +6,13 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Vector;
 
+/**
+ * Parse JSON string to java object(HashTable)
+ * @author Shaun, Mataire
+ * @author Mulhall, Elias
+ * @author Callaway, Erin M
+ *
+ */
 public class JSONParser1
 {
 
@@ -14,13 +21,35 @@ public class JSONParser1
 
   }
 
+  /**
+   * parse JSON string to java Object
+   * @param buffer
+   * @return
+   * Hashtable object
+   * @pre
+   * buffer is not null
+   * @post
+   * the JSON string/bufferedreader has been passed to a Java HasTable object
+   * @throws Exception
+   */
   public Object parse(String str)
     throws Exception
   {
     BufferedReader text = new BufferedReader(new StringReader(str));
     return this.parse(text);
-  }
+  }//Object parse(String str)
 
+  /**
+   * parse JSON string to java Object
+   * @param buffer
+   * @return
+   * Hashtable object
+   * @pre
+   * buffer is not null
+   * @post
+   * the JSON string/bufferedreader has been passed to a Java HasTable object
+   * @throws Exception
+   */
   public Object parse(BufferedReader buffer)
     throws Exception
   {
@@ -92,11 +121,20 @@ public class JSONParser1
             // otherwise error
             default:
               throw new Exception("1");
-          }
-      }
+          }//switch(c)
+      }//while
     throw new Exception("2");
-  }
+  }// Object parse(BufferedReader buffer)
 
+  /**
+   * Parse JSON string/bufferedReader into a java BigDecimal 
+   * @pre
+   * buffer is an element of REAL NUMBERS
+   * @post
+   * string/bufferedreader is parsed to java BigDecimal
+   * @param buffer
+   * @throws Exception
+   */
   public BigDecimal parseNum(BufferedReader buffer)
     throws Exception
   {
@@ -136,17 +174,26 @@ public class JSONParser1
               num_end = true;
               buffer.reset();
               break;
-          }
-      }
+          }//switch (n)
+      }//while(!num_end)
     try
       {
         return new BigDecimal(builder.toString());
-      }
+      }//try
     catch (NumberFormatException e)
       {
-        throw new Exception("3 " + e);
-      }
-  }
+        throw new Exception(e);
+      }//catch
+  }//BigDecimal parseNum(BufferedReader buffer)
+  
+  
+  /**
+   * Parse JSON string to java null 
+   * @param buffer
+   * @pre buffer must be "null"
+   * @return
+   * @throws Exception
+   */
 
   public Object parseNull(BufferedReader buffer)
     throws Exception
@@ -157,12 +204,20 @@ public class JSONParser1
         && buffer.read() == 'l')
       {
         return null;
-      }
+      }//if
     else
       {
-        throw new Exception("4");
-      }
-  }
+        throw new Exception("Precondtion not met: input string not \"null\"");
+      }//else
+  }//Object parseNull(BufferedReader buffer)
+  
+  
+  /**
+   * Parse JSON to java boolean (true)
+   * @param buffer
+   * @pre buffer must be "true"
+   * @throws Exception
+   */
 
   public boolean parseTrue(BufferedReader buffer)
     throws Exception
@@ -173,13 +228,20 @@ public class JSONParser1
         && buffer.read() == 'e')
       {
         return true;
-      }
+      }//if
     else
       {
-        throw new Exception("5");
-      }
-  }
+        throw new Exception("Precondition preconditon not met: buffer not \"true\"");
+      }//else
+  }//parseTrue(BufferedReader buffer)
 
+  
+  /**
+   * Parse JSON to java boolean (false)
+   * @param buffer
+   * @pre buffer must be "false"
+   * @throws Exception
+   */
   public boolean parseFalse(BufferedReader buffer)
     throws Exception
   {
@@ -189,13 +251,21 @@ public class JSONParser1
         && buffer.read() == 's' && buffer.read() == 'e')
       {
         return false;
-      }
+      }//if
     else
       {
-        throw new Exception("");
-      }
-  }
+        throw new Exception("Precondition preconditon not met: buffer not \"false\"");
+      }//else
+  }//parseFalse(BufferedReader buffer)
 
+  
+  /**
+   * Parse JSON string
+   * @pre buffer is 'chain'(string) of characters and must start with either '"' or '\'
+   * @param buffer
+   * @return Java string
+   * @throws Exception
+   */
   public String parseString(BufferedReader buffer)
     throws Exception
   {
@@ -234,8 +304,8 @@ public class JSONParser1
                     builder.append((char) c);
                     break;
                   default:
-                    throw new Exception("");
-                }
+                    throw new Exception(c+" not \" or \\ ");
+                }//switch(c)
               break;
             case '"':
               // string is done
@@ -248,11 +318,22 @@ public class JSONParser1
               // add all chars to string
               builder.append((char) c);
               break;
-          }
-      }
+          }//switch(C)
+      }//while
     return builder.toString();
-  }
+  }//String parseString(BufferedReader buffer)
 
+  
+  /**
+   * Parse Jason Array
+   * @param buffer
+   * @pre 
+   * buffer must start with '['
+   * '[' can not be followed by ','
+   * @return
+   * Vector
+   * @throws Exception
+   */
   public Vector<Object> parseArray(BufferedReader buffer)
     throws Exception
   {
@@ -289,37 +370,48 @@ public class JSONParser1
               if (value_found)
                 {
                   value_found = false;
-                }
+                }//if
               else
                 {
-                  throw new Exception("");
-                }
+                  throw new Exception(" ',' not found");
+                }//else
               break;
             case ']':
               if (value_found)
                 {
                   array_end = true;
-                }
+                }//if
               else
                 {
                   // last char was ',' bad syntax
-                  throw new Exception("");
-                }
+                  throw new Exception("bad syntax: last character is '");
+                }//else
               break;
             case -1:
               // end of buffer before array end
-              throw new Exception("");
+              throw new Exception("Array not closed");
             default:
               // parse value
               buffer.reset();
               vec.add(parse(buffer));
               value_found = true;
               break;
-          }
-      }
+          }//switch (c)
+      }//while
     return vec;
-  }
+  }//parseArray(BufferedReader buffer)
 
+  /**
+   * Parse Jason Array
+   * @param buffer
+   * @pre 
+   * buffer must start with '{'
+   * '{' must be followed by type 'string' i.e a '"' and a ':'
+   * @return
+   * HashMap
+   * @throws Exception
+   */
+  
   public HashMap<String, Object> parseObject(BufferedReader buffer)
     throws Exception
   {
@@ -363,54 +455,61 @@ public class JSONParser1
                   buffer.reset();
                   key = (String) parse(buffer);
                   key_found = true;
-                }
+                }//if
               else
                 {
-                  throw new Exception("");
-                }
+                  throw new Exception("Precondition not met: '{' not followed by type string i.e. '\"' ");
+                }//else
               break;
             case ':':
               if (key_found && !value_found)
                 {
                   value = parse(buffer);
                   value_found = true;
-                }
+                }//if
               else
                 {
-                  throw new Exception("");
-                }
+                  throw new Exception("Precondition not met: type string not followed by a ':'");
+                }//else
               break;
             case '}':
               if (key_found)
                 {
                   throw new Exception("unresolved key value pair");
-                }
+                }//if
               else
                 {
                   hash_end = true;
-                }
+                }//else
               break;
             case -1:
-              throw new Exception("");
+              throw new Exception("Object not closed, expected '}'");
             default:
               throw new Exception("");
-          }
+          }//switch(c)
         if (key_found && value_found)
           {
             hash.put(key, value);
             key_found = false;
             value_found = false;
-          }
-      }
+          }//if
+      }//while
     return hash;
-  }
+  }//parseObject(BufferedReader buffer)
 
+  
+  /**
+   * Experiment
+   * @param args
+   * @throws Exception
+   */
   public static void main(String[] args)
     throws Exception
   {
     JSONParser1 parser = new JSONParser1();
     ToString str = new ToString();
-    Object val = parser.parse("{ \"test\":false \"One\":2 \"obJ\":{ \"1\":1e34 } \"arr\":[ 1, 2, 3, true, null ] }");
+    Object val =
+        parser.parse("{ \"test\":false \"One\":2 \"obJ\":{ \"1\":1e34 } \"arr\":[ 1, 2, 3, true, null ] }");
     System.out.println(str.toStr(val));
-  }
-}
+  }//main(string[]
+}//JSONParse1
