@@ -9,11 +9,20 @@ import java.util.Vector;
 public class JSONParser1
 {
 
+  /**
+   *
+   */
   public JSONParser1()
   {
 
   }
 
+  /**
+   * 
+   * @param str
+   * @return
+   * @throws Exception
+   */
   public Object parse(String str)
     throws Exception
   {
@@ -21,6 +30,12 @@ public class JSONParser1
     return this.parse(text);
   }
 
+  /**
+   * 
+   * @param buffer
+   * @return
+   * @throws Exception
+   */
   public Object parse(BufferedReader buffer)
     throws Exception
   {
@@ -91,12 +106,18 @@ public class JSONParser1
               break;
             // otherwise error
             default:
-              throw new Exception("1");
+              throw new Exception("JSON ERROR: Invalid character " + c);
           } // switch(c)
       } // while (!buffer_end)
-    throw new Exception("2");
+    throw new Exception("JSON ERROR: no json values found in string");
   } // parse(BufferedReader)
 
+  /**
+   * 
+   * @param buffer
+   * @return
+   * @throws Exception
+   */
   public BigDecimal parseNum(BufferedReader buffer)
     throws Exception
   {
@@ -144,10 +165,16 @@ public class JSONParser1
       } // try
     catch (NumberFormatException e)
       {
-        throw new Exception("3 " + e);
+        throw new Exception("3 " + );
       } // catch
   } // parseNum(BufferedReader)
 
+  /**
+   * 
+   * @param buffer
+   * @return
+   * @throws Exception
+   */
   public Object parseNull(BufferedReader buffer)
     throws Exception
   {
@@ -164,6 +191,12 @@ public class JSONParser1
       } // else
   } // parseNull(BufferedReader)
 
+  /**
+   * 
+   * @param buffer
+   * @return
+   * @throws Exception
+   */
   public boolean parseTrue(BufferedReader buffer)
     throws Exception
   {
@@ -180,6 +213,12 @@ public class JSONParser1
       } // else
   } // parseTrue(BufferedReader)
 
+  /**
+   * 
+   * @param buffer
+   * @return
+   * @throws Exception
+   */
   public boolean parseFalse(BufferedReader buffer)
     throws Exception
   {
@@ -196,6 +235,12 @@ public class JSONParser1
       } // else
   } // parseFalse(BufferedReader)
 
+  /**
+   * 
+   * @param buffer
+   * @return
+   * @throws Exception
+   */
   public String parseString(BufferedReader buffer)
     throws Exception
   {
@@ -252,6 +297,12 @@ public class JSONParser1
     return builder.toString();
   }
 
+  /**
+   * 
+   * @param buffer
+   * @return
+   * @throws Exception
+   */
   public Vector<Object> parseArray(BufferedReader buffer)
     throws Exception
   {
@@ -319,6 +370,12 @@ public class JSONParser1
     return vec;
   }
 
+  /**
+   * 
+   * @param buffer
+   * @return
+   * @throws Exception
+   */
   public HashMap<String, Object> parseObject(BufferedReader buffer)
     throws Exception
   {
@@ -348,6 +405,7 @@ public class JSONParser1
         // if key is not found
         switch (c)
           {
+            case ',':
             case ' ':
             case '\n':
             case '\t':
@@ -409,7 +467,7 @@ public class JSONParser1
   {
     JSONParser1 parser = new JSONParser1();
     ToString str = new ToString();
-    Object val = parser.parse("{ \"test\":false \"One\":2 \"obJ\":{ \"1\":1e34 } \"arr\":[ 1, 2, 3, true, null ] }");
+    Object val = parser.parse(".e4");
     System.out.println(str.toStr(val));
   }
 }
