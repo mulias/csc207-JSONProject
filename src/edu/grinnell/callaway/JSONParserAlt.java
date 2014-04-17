@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Vector;
+
 import edu.grinnell.callaway.jsonvalues.JSONArray;
 import edu.grinnell.callaway.jsonvalues.JSONNull;
 import edu.grinnell.callaway.jsonvalues.JSONNumber;
@@ -12,14 +13,24 @@ import edu.grinnell.callaway.jsonvalues.JSONString;
 import edu.grinnell.callaway.jsonvalues.JSONBoolean;
 import edu.grinnell.callaway.jsonvalues.JSONValue;
 
+/**
+ * Parse JSON string to java object(HashTable)
+ * 
+ * @author Shaun, Mataire
+ * @author Mulhall, Elias
+ * @author Callaway, Erin M
+ * 
+ */
 public class JSONParserAlt
 {
+
   /**
-   * Takes a JSON string and returns a java representation of the JSON value.
-   * Pre: 
-   * Post: a new object of type JSONValue is returned, containing the JSON data
-   * @param str
-   * @return
+   * parse JSON string to java JSONValue object
+   * 
+   * @param String
+   * @return JSONValue
+   * @pre string is formated JSON code
+   * @post the JSON string has been translated to a JSONValue
    * @throws Exception
    */
   public JSONValue parse(String str)
@@ -30,9 +41,13 @@ public class JSONParserAlt
   } // JSONValue parse(String)
 
   /**
+   * parse JSON string to JSONValue
    * 
    * @param buffer
-   * @return
+   * @return JSONValue
+   * @pre buffer is not null
+   * @post the JSON string/bufferedreader has been passed to a Java HasTable
+   *       object
    * @throws Exception
    */
   public JSONValue parse(BufferedReader buffer)
@@ -112,9 +127,12 @@ public class JSONParserAlt
   } // parse(BufferedReader)
 
   /**
+   * Parse JSON string/bufferedReader into a JSONNumber
    * 
+   * @pre buffer is an element of REAL NUMBERS
+   * @post string/bufferedreader is parsed to java BigDecimal
    * @param buffer
-   * @return
+   * @return JSONNumber
    * @throws Exception
    */
   public JSONNumber parseNum(BufferedReader buffer)
@@ -170,9 +188,11 @@ public class JSONParserAlt
   } // parseNum(BufferedReader)
 
   /**
+   * Parse JSON string to JSONNull
    * 
    * @param buffer
-   * @return
+   * @pre buffer must be "null"
+   * @return JSONNull
    * @throws Exception
    */
   public JSONNull parseNull(BufferedReader buffer)
@@ -187,14 +207,16 @@ public class JSONParserAlt
       } // if
     else
       {
-        throw new Exception("JSON NULL ERROR: invalid null value");
-      } // else
-  } // parseNull(BufferedReader)
+        throw new Exception(
+                            "JSON NULL ERROR: precondtion not met, input not \"null\"");
+      }// else
+  }// Object parseNull(BufferedReader buffer)
 
   /**
+   * Parse JSON to JSONBoolean (true)
    * 
    * @param buffer
-   * @return
+   * @pre buffer must be "true"
    * @throws Exception
    */
   public JSONBoolean parseTrue(BufferedReader buffer)
@@ -209,14 +231,16 @@ public class JSONParserAlt
       } // if
     else
       {
-        throw new Exception("JSON BOOLEAN ERROR: invalid true value");
-      } // else
-  } // parseTrue(BufferedReader)
+        throw new Exception(
+                            "JSON BOOLEAN ERROR: precondition not met, input not \"true\"");
+      }// else
+  }// parseTrue(BufferedReader buffer)
 
   /**
+   * Parse JSON to JSONBoolean (false)
    * 
    * @param buffer
-   * @return
+   * @pre buffer must be "false"
    * @throws Exception
    */
   public JSONBoolean parseFalse(BufferedReader buffer)
@@ -231,14 +255,18 @@ public class JSONParserAlt
       } // if
     else
       {
-        throw new Exception("JSON BOOLEAN ERROR: invalid false value");
-      } // else
-  } // parseFalse(BufferedReader)
+        throw new Exception(
+                            "JSON BOOLEAN ERROR: precondition not met, value not \"false\"");
+      }// else
+  }// parseFalse(BufferedReader buffer)
 
   /**
+   * Parse JSON string to JSONString
    * 
+   * @pre buffer is 'chain'(string) of characters and must start with either '"'
+   *      or '\'
    * @param buffer
-   * @return
+   * @return JSONString
    * @throws Exception
    */
   public JSONString parseString(BufferedReader buffer)
@@ -300,15 +328,17 @@ public class JSONParserAlt
               // add all chars to string
               builder.append((char) c);
               break;
-          }
-      }
+          }// switch(C)
+      }// while
     return new JSONString(builder.toString());
-  }
+  }// String parseString(BufferedReader buffer)
 
   /**
+   * Parse Jason string to JSONArray
    * 
    * @param buffer
-   * @return
+   * @pre buffer must start with '[' '[' can not be followed by ','
+   * @return JSONArray
    * @throws Exception
    */
   public JSONArray parseArray(BufferedReader buffer)
@@ -347,7 +377,7 @@ public class JSONParserAlt
               if (value_found)
                 {
                   value_found = false;
-                }
+                }// if
               else
                 {
                   throw new Exception(
@@ -355,15 +385,7 @@ public class JSONParserAlt
                 }
               break;
             case ']':
-              if (value_found)
-                {
-                  array_end = true;
-                }
-              else
-                {
-                  // last char was ',' bad syntax
-                  throw new Exception("");
-                }
+              array_end = true;
               break;
             case -1:
               // end of buffer before array end
@@ -375,15 +397,18 @@ public class JSONParserAlt
               vec.add(parse(buffer));
               value_found = true;
               break;
-          }
-      }
+          }// switch (c)
+      }// while
     return new JSONArray(vec);
-  }
+  }// parseArray(BufferedReader buffer)
 
   /**
+   * Parse Jason string to JSONObject
    * 
    * @param buffer
-   * @return
+   * @pre buffer must start with '{' '{' must be followed by type 'string' i.e a
+   *      '"' and a ':'
+   * @return JSONObject
    * @throws Exception
    */
   public JSONObject parseObject(BufferedReader buffer)
@@ -430,58 +455,49 @@ public class JSONParserAlt
                   buffer.reset();
                   key = (JSONString) parse(buffer);
                   key_found = true;
-                }
+                } // if
               else
                 {
                   throw new Exception("JSON OBJECT ERROR: invalid character "
                                       + c);
-                }
+                } // else
               break;
             case ':':
               if (key_found && !value_found)
                 {
                   value = parse(buffer);
                   value_found = true;
-                }
+                } // if
               else
                 {
                   throw new Exception(
                                       "JSON OBJECT ERROR: missplaced ':', should seperate key:value pairs");
-                }
+                } // else
               break;
             case '}':
               if (key_found)
                 {
                   throw new Exception(
                                       "JSON OBJECT ERROR: unresolved key value pair");
-                }
+                } // if
               else
                 {
                   hash_end = true;
-                }
+                } // else
               break;
             case -1:
               throw new Exception(
                                   "JSON OBJECT ERROR: no closing } before end of input");
             default:
               throw new Exception("JSON OBJECT ERROR: invalid character " + c);
-          }
+          } // switch(c)
         if (key_found && value_found)
           {
             hash.put(key, value);
             key_found = false;
             value_found = false;
-          }
-      }
+          } // if
+      } // while
     return new JSONObject(hash);
-  }
-
-  public static void main(String[] args)
-    throws Exception
-  {
-    JSONParserAlt parser = new JSONParserAlt();
-    JSONValue val =
-        parser.parse("{ \"1\":2 \"3\":2 \"5\":2333 }");
-    System.out.println(val.toJSON());
-  }
-}
+  } // parseObject(BufferedReader buffer)
+}// JSONParserAlt
