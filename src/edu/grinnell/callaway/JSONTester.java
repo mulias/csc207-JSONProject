@@ -10,7 +10,7 @@ import org.junit.Test;
 
 public class JSONTester
 {
-  JSONParser parser1 = new JSONParser();
+  JSONParser parser = new JSONParser();
   ToString str = new ToString();
 
   @Test
@@ -67,4 +67,20 @@ public class JSONTester
                  "{\"f\":{\"y\":2.7E-4,\"x\":\"it\"},\"d\":[1,2,{\"y\":2.7E-4,\"x\":\"it\"}],\"e\":null,\"j\":[[1,2,{\"y\":2.7E-4,\"x\":\"it\"}],2],\"b\":2.7E-4,\"c\":\"The\",\"a\":true}",
                  str.toStr(hash));
   } // toStrTestObVec
+
+  @Test
+  public void parseTest()
+    throws Exception
+  {
+    assertEquals("1. JSON string",
+                 "{\"Pro\":{\"FName\":\"Sam\",\"LName\":\"Rebelsky\"},\"Number\":207,\"Department\":\"CSC\"}",
+                 str.toStr(parser.parse("{\"Department\":\"CSC\", \"Number\":207, \"Pro\":{\"LName\":\"Rebelsky\",\"FName\":\"Sam\"}}")));
+    assertEquals("2. array", "[1,2,3]", str.toStr(parser.parse("[1,2,3]")));
+    assertEquals("3. number", "34", str.toStr(parser.parse("34")));
+    assertEquals("4. decimal", "34.6", str.toStr(parser.parse("34.6")));
+    assertEquals("5. enum", "3E+32", str.toStr(parser.parse("3e32")));
+    assertEquals("6. null", "null", str.toStr(parser.parse("null")));
+    assertEquals("7. true", "true", str.toStr(parser.parse("true")));
+    assertEquals("8. false", "false", str.toStr(parser.parse("false")));
+  }
 } // class JSONTester
