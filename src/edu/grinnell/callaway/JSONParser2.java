@@ -33,7 +33,7 @@ public class JSONParser2
   {
     BufferedReader text = new BufferedReader(new StringReader(str));
     return this.parse(text);
-  }
+  } // JSONValue parse(String)
 
   /**
    * 
@@ -112,10 +112,10 @@ public class JSONParser2
             // otherwise error
             default:
               throw new Exception("1");
-          }
-      }
+          } // switch(c)
+      } // while (!buffer_end)
     throw new Exception("2");
-  }
+  } // parse(BufferedReader)
 
   /**
    * 
@@ -162,17 +162,17 @@ public class JSONParser2
               num_end = true;
               buffer.reset();
               break;
-          }
-      }
+          } // switch (n)
+      } // while (!num_end)
     try
       {
         return new JSONNumber(builder.toString());
-      }
+      } // try
     catch (NumberFormatException e)
       {
         throw new Exception("3 " + e);
-      }
-  }
+      } // catch
+  } // parseNum(BufferedReader)
 
   /**
    * 
@@ -189,12 +189,12 @@ public class JSONParser2
         && buffer.read() == 'l')
       {
         return new JSONNull();
-      }
+      } // if
     else
       {
         throw new Exception("4");
-      }
-  }
+      } // else
+  } // parseNull(BufferedReader)
 
   /**
    * 
@@ -211,12 +211,12 @@ public class JSONParser2
         && buffer.read() == 'e')
       {
         return new JSONBoolean(true);
-      }
+      } // if
     else
       {
         throw new Exception("5");
-      }
-  }
+      } // else
+  } // parseTrue(BufferedReader)
 
   /**
    * 
@@ -233,12 +233,12 @@ public class JSONParser2
         && buffer.read() == 's' && buffer.read() == 'e')
       {
         return new JSONBoolean(false);
-      }
+      } // if
     else
       {
         throw new Exception("");
-      }
-  }
+      } // else
+  } // parseFalse(BufferedReader)
 
   /**
    * 
@@ -277,15 +277,14 @@ public class JSONParser2
               // escape char for " or \
               // json should support \/, but java doesn't
               c = buffer.read();
-              switch (c)
+              if (c == '"' || c == '\\')
                 {
-                  case '"':
-                  case '\\':
-                    builder.append((char) c);
-                    break;
-                  default:
-                    throw new Exception("");
-                }
+                  builder.append((char) c);
+                } // if
+              else
+                {
+                  throw new Exception("");
+                } // else
               break;
             case '"':
               // string is done
@@ -411,6 +410,7 @@ public class JSONParser2
         // if key is not found
         switch (c)
           {
+            case ',':
             case ' ':
             case '\n':
             case '\t':
