@@ -91,10 +91,10 @@ public class JSONParser
               break;
             // otherwise error
             default:
-              throw new Exception("JSON ERROR: Invalid character " + c);
+              throw new Exception("JSON ERROR: Invalid input character " + c);
           } // switch(c)
       } // while (!buffer_end)
-    throw new Exception("JSON ERROR: no json values found in string");
+    throw new Exception("JSON ERROR: no json values found in input");
   } // parse(BufferedReader)
 
   /**
@@ -144,13 +144,14 @@ public class JSONParser
               break;
           } // switch (n)
       } // while (!num_end)
+    String number = builder.toString();
     try
       {
-        return new BigDecimal(builder.toString());
+        return new BigDecimal(number);
       } // try
     catch (NumberFormatException e)
       {
-        throw new Exception("3 " + e);
+        throw new Exception("JSON NUMBER ERROR: invalid number" + number);
       } // catch
   } // parseNum(BufferedReader)
 
@@ -172,7 +173,7 @@ public class JSONParser
       } // if
     else
       {
-        throw new Exception("4");
+        throw new Exception("JSON NULL ERROR: invalid null value");
       } // else
   } // parseNull(BufferedReader)
 
@@ -194,7 +195,7 @@ public class JSONParser
       } // if
     else
       {
-        throw new Exception("5");
+        throw new Exception("JSON BOOLEAN ERROR: invalid true value");
       } // else
   } // parseTrue(BufferedReader)
 
@@ -216,7 +217,7 @@ public class JSONParser
       } // if
     else
       {
-        throw new Exception("");
+        throw new Exception("JSON BOOLEAN ERROR: invalid false value");
       } // else
   } // parseFalse(BufferedReader)
 
@@ -261,9 +262,16 @@ public class JSONParser
                 {
                   builder.append((char) c);
                 } // if
+              else if (c == -1)
+                {
+                  throw new Exception(
+                                      "JSON STRING ERROR: no closing \" before end of input");
+                }
               else
                 {
-                  throw new Exception("");
+                  throw new Exception(
+                                      "JSON STRING ERROR: invalid escape character \\"
+                                          + c);
                 } // else
               break;
             case '"':
@@ -272,7 +280,8 @@ public class JSONParser
               break;
             case -1:
               // reach end of json before ending string
-              throw new Exception("no closing \" before end of input");
+              throw new Exception(
+                                  "JSON STRING ERROR: no closing \" before end of input");
             default:
               // add all chars to string
               builder.append((char) c);
@@ -327,23 +336,17 @@ public class JSONParser
                 }
               else
                 {
-                  throw new Exception("");
+                  throw new Exception(
+                                      "JSON ARRAY ERROR: missplaced comma in array list");
                 }
               break;
             case ']':
-              if (value_found)
-                {
-                  array_end = true;
-                }
-              else
-                {
-                  // last char was ',' bad syntax
-                  throw new Exception("");
-                }
+              array_end = true;
               break;
             case -1:
               // end of buffer before array end
-              throw new Exception("");
+              throw new Exception(
+                                  "JSON ARRAY ERROR: no closing ] before end of input");
             default:
               // parse value
               buffer.reset();
@@ -408,7 +411,8 @@ public class JSONParser
                 }
               else
                 {
-                  throw new Exception("");
+                  throw new Exception("JSON OBJECT ERROR: invalid character "
+                                      + c);
                 }
               break;
             case ':':
@@ -419,13 +423,15 @@ public class JSONParser
                 }
               else
                 {
-                  throw new Exception("");
+                  throw new Exception(
+                                      "JSON OBJECT ERROR: missplaced ':', should seperate key:value pairs");
                 }
               break;
             case '}':
               if (key_found)
                 {
-                  throw new Exception("unresolved key value pair");
+                  throw new Exception(
+                                      "JSON OBJECT ERROR: unresolved key value pair");
                 }
               else
                 {
@@ -433,9 +439,10 @@ public class JSONParser
                 }
               break;
             case -1:
-              throw new Exception("");
+              throw new Exception(
+                                  "JSON OBJECT ERROR: no closing } before end of input");
             default:
-              throw new Exception("");
+              throw new Exception("JSON OBJECT ERROR: invalid character " + c);
           }
         if (key_found && value_found)
           {
@@ -537,7 +544,7 @@ public class JSONParser
   {
     JSONParser parser = new JSONParser();
     ToString str = new ToString();
-    Object val = parser.parse(".e4");
+    Object val = parser.parse("[ 1 2 3 ]");
     System.out.println(str.toStr(val));
   }
 }
