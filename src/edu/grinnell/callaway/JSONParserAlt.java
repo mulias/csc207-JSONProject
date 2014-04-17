@@ -15,7 +15,9 @@ import edu.grinnell.callaway.jsonvalues.JSONValue;
 public class JSONParserAlt
 {
   /**
-   * 
+   * Takes a JSON string and returns a java representation of the JSON value.
+   * Pre: 
+   * Post: a new object of type JSONValue is returned, containing the JSON data
    * @param str
    * @return
    * @throws Exception
