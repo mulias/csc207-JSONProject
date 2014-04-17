@@ -117,11 +117,12 @@ public class JSONTester
     assertEquals("8. false", "false", str.toStr(parser.parse("false")));
     assertEquals("9. negative", "-3.4", str.toStr(parser.parse("-3.4")));
 
-    assertEquals("5. things within things",
+    assertEquals("10. things within things",
                  "{\"f\":{\"y\":2.9E+57,\"x\":\"it\"},"
                      + "\"e\":null,\"c\":\"The\",\"j\":[1,2]}",
                  str.toStr(parser.parse("{\"f\":{\"y\":29e56,\"x\":\"it\"},"
                                         + "\"e\":null,\"j\":[1,2],\"c\":\"The\"}")));
+    assertEquals("11. object in array", , str.toStr(parser.parse("[1,2,{\"f\":{\"y\":29e56}]")));
   } // parseTest()
 >>>>>>> a4e55d3708e0bbd70116b0fde92c6cdf96409392
 } // class JSONTester
