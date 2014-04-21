@@ -1,10 +1,12 @@
 csc207-JSONProject
 ==================
   
-Dear Grader,  
-  
-We finished everything by 10:30, but there were some pretty serious merge errors when we all pushed to git. Fixing that took until 11. Sorry for finishing that a bit late.  
-  
-Love,  
-Eli, Erin, Shaun
+Part II
 
+Better Documentation
+Read from other sources
+Add test (general + errors)
+refactor some (use peek)
+A short description of special features you decided to include and why you decided on those features.
+An explanation of what criteria you used in deciding upon your license.
+Comments on any other aspect of the project that you think I should know about.
