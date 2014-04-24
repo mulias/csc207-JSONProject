@@ -60,8 +60,10 @@ public class SourceModel
         in.close();
         return jsonOut;
       }
-    else{
-      throw new Exception("Entered string is neither a URL nor a file location");
-    }
+    else
+      {
+        throw new Exception(
+                            "Entered string is neither a URL nor a file location");
+      }
   }//handleURL( String jsonURL)
 }//SourceModel
