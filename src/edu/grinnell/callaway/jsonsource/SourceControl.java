@@ -11,7 +11,7 @@ public class SourceControl
     |VIEW| -(3)-send URl addr----> | CONTROL | -return string-(6)-> | CALL |
     ****** <-Completion signal-(6) ***********                      ********
                                       |     ^
-                               Send URL(4)  |    
+                       Send URL/fileLoc(4)  |    
                                       |     |
                                       |   Send file location(5)
                                       v     |
