@@ -1,7 +1,5 @@
 package edu.grinnell.callaway.jsonsource;
 
-import java.io.IOException;
-
 /*
  * Citation: http://www.mkyong.com/java/how-to-get-url-content-in-java/
  * http://www.tutorialspoint.com/design_pattern/mvc_pattern.htm
@@ -34,8 +32,8 @@ public class SourceControl
   /*
    * 
    */
-  public void control() throws IOException{
-    model.handleURL(view.getURL());
+  public void control() throws Exception{
+    model.handleJSONSource(view.getJSONSource());
     view.finishSignal();
   }//control() 
 }//SourceControl
