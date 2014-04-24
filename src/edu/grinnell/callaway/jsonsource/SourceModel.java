@@ -52,9 +52,7 @@ public class SourceModel
       }
     else if (firstChar == 'h')
       {
-        BufferedReader in = null;
-
-        in = new BufferedReader(new FileReader(jsonSource));
+        BufferedReader in = new BufferedReader(new FileReader(jsonSource));
         while ((fileLine = in.readLine()) != null)
           {
             jsonOut = jsonOut + fileLine;
