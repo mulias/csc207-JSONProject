@@ -7,25 +7,18 @@ import java.io.PrintWriter;
 
 public class SourceView
 {
-  PrintWriter pen = new PrintWriter(System.out, true);
-  String jsonURL;
-  String jsonFile;
+PrintWriter pen = new PrintWriter(System.out, true);
 
-
-
-  /*
-   * Gets the JSON file URL from user
-   * @pre
-   * @post
-   */
-  public String getURL()
+  public String getJSONSource()
     throws IOException
 
   {
+    String jsonURL;
     BufferedReader in;
-
+    
     pen.println("URL example: http://yourDomain.com/file.json");
-    pen.println("Please enter URL:");
+    pen.println("file location example: /home/user/Documents/file.json");
+    pen.println("Please enter URL or file location:");
     in = new BufferedReader(new InputStreamReader(System.in));
 
     try
