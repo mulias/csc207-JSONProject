@@ -9,9 +9,18 @@ public class SourceView
 {
   PrintWriter pen = new PrintWriter(System.out, true);
   String jsonURL;
+  String jsonFile;
 
+
+
+  /*
+   * Gets the JSON file URL from user
+   * @pre
+   * @post
+   */
   public String getURL()
     throws IOException
+
   {
     BufferedReader in;
 
@@ -31,8 +40,11 @@ public class SourceView
     return jsonURL;
   }//String getURL()
 
+  /*
+   * Signals that the content of the URL file has been sent the the Parser
+   */
   public void finishSignal()
   {
     pen.println("Done");
   }//finishSignal()
-}
+}//SourceView

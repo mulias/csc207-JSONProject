@@ -31,6 +31,9 @@ public class SourceControl
     this.view = view;
   }//SourceControl(SourceModel model, SourceView view)
   
+  /*
+   * 
+   */
   public void control() throws IOException{
     model.handleURL(view.getURL());
     view.finishSignal();

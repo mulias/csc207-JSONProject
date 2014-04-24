@@ -16,7 +16,8 @@ public class SourceModel
 {
   String jsonOut;
 
-  public String handleURL(String jsonURL) throws IOException 
+  public String handleURL(String jsonURL)
+    throws IOException
   {
     String fileLine;
     //get URL
@@ -30,13 +31,13 @@ public class SourceModel
         while ((fileLine = in.readLine()) != null)
           {
             jsonOut = jsonOut + fileLine;
-          }
+          }//while
 
-      }
+      }//try
     catch (MalformedURLException e)
       {
-       throw new MalformedURLException("MalformedURLException: " + e);
-      }
+        throw new MalformedURLException("MalformedURLException: " + e);
+      }//catch
     return jsonOut;
   }//handleURL( String jsonURL)
 }//SourceModel
