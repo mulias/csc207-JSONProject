@@ -25,8 +25,7 @@ public class SourceView
       }
     catch (IOException e)
       {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
+        throw new IOException("IOException: " + e);
       }
     in.close();
     return jsonURL;

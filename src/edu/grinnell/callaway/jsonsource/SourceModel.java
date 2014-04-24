@@ -16,7 +16,7 @@ public class SourceModel
 {
   String jsonOut;
 
-  public String handleURL(String jsonURL)
+  public String handleURL(String jsonURL) throws IOException 
   {
     String fileLine;
     //get URL
@@ -35,11 +35,7 @@ public class SourceModel
       }
     catch (MalformedURLException e)
       {
-        e.printStackTrace();
-      }
-    catch (IOException e)
-      {
-        e.printStackTrace();
+       throw new MalformedURLException("MalformedURLException: " + e);
       }
     return jsonOut;
   }//handleURL( String jsonURL)
