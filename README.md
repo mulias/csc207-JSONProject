@@ -4,7 +4,7 @@ csc207-JSONProject
 Part II
 
 Better Documentation  
-Read from other sources  
+Read from other sources <--- two 
 Add test (general + errors)  
 refactor some (use peek)  
 A short description of special features you decided to include and why you decided on those features.  
