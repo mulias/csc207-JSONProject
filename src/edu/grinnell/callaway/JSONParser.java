@@ -68,7 +68,7 @@ public class JSONParser
       }
   }// parseFromSource(String)
 
-  public static Object parse(Reader in)
+  public Object parse(Reader in)
     throws Exception
   {
     IndexedBufferedReader buffer = new IndexedBufferedReader(in);
@@ -86,7 +86,7 @@ public class JSONParser
    * @post the JSON string has been translated into a java object
    * @throws Exception
    */
-  public static Object parse(IndexedBufferedReader buffer)
+  public Object parse(IndexedBufferedReader buffer)
     throws Exception
   {
     // mark each space in buffer before advancing one
@@ -165,7 +165,7 @@ public class JSONParser
    * @return
    * @throws Exception
    */
-  public static BigDecimal parseNum(IndexedBufferedReader buffer)
+  public BigDecimal parseNum(IndexedBufferedReader buffer)
     throws Exception
   {
     // use a StringBuilder to stick nums together
@@ -224,7 +224,7 @@ public class JSONParser
    * @return
    * @throws Exception
    */
-  public static Object parseNull(IndexedBufferedReader buffer)
+  public Object parseNull(IndexedBufferedReader buffer)
     throws Exception
   {
     // if the next chars spell out 'null', return null
@@ -250,7 +250,7 @@ public class JSONParser
    * @pre buffer must be "true"
    * @throws Exception
    */
-  public static Boolean parseTrue(IndexedBufferedReader buffer)
+  public Boolean parseTrue(IndexedBufferedReader buffer)
     throws Exception
   {
     // if the next chars spell out 'true', return true
@@ -276,7 +276,7 @@ public class JSONParser
    * @pre buffer must be "false"
    * @throws Exception
    */
-  public static Boolean parseFalse(IndexedBufferedReader buffer)
+  public Boolean parseFalse(IndexedBufferedReader buffer)
     throws Exception
   {
     // if the next chars spell out 'true', return true
@@ -304,7 +304,7 @@ public class JSONParser
    * @return Java string
    * @throws Exception
    */
-  public static String parseString(IndexedBufferedReader buffer)
+  public String parseString(IndexedBufferedReader buffer)
     throws Exception
   {
     // save each char to a StringBuilder
@@ -372,7 +372,7 @@ public class JSONParser
    * @return Vector
    * @throws Exception
    */
-  public static Vector<Object> parseArray(IndexedBufferedReader buffer)
+  public Vector<Object> parseArray(IndexedBufferedReader buffer)
     throws Exception
   {
     // save values in array to a vector
@@ -431,7 +431,7 @@ public class JSONParser
    * @return HashMap
    * @throws Exception
    */
-  public static HashMap<String, Object>
+  public HashMap<String, Object>
     parseObject(IndexedBufferedReader buffer)
       throws Exception
   {
@@ -528,14 +528,14 @@ public class JSONParser
     return hash;
   }// parseObject(IndexedBufferedReader)
 
-  public static String jsonError(String header, String body,
+  public String jsonError(String header, String body,
                                  IndexedBufferedReader buffer)
     throws IOException
   {
     return jsonError(header, body, buffer, 0);
   }
 
-  public static String jsonError(String header, String body,
+  public String jsonError(String header, String body,
                                  IndexedBufferedReader buffer, int offset)
     throws IOException
   {
