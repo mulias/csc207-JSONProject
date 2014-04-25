@@ -53,7 +53,8 @@ public class JSONParser
             URLConnection connect = url.openConnection();
             return parse(new InputStreamReader(connect.getInputStream()));
           }
-        // Support for both linux (/) and Windows style paths (starting with either C: or \)
+        // Support for both linux (/) and Windows style paths (starting with
+        // either C: or \)
         else if (firstChar == '/' || firstChar == 'C' || firstChar == '\\')
           {
             // a local file
@@ -155,6 +156,7 @@ public class JSONParser
               return parseNum(buffer);
             default:
               // otherwise error
+              buffer.read();
               throw new Exception(jsonError("JSON ERROR",
                                             "Invalid input character "
                                                 + (char) c, buffer));
@@ -219,7 +221,7 @@ public class JSONParser
       {
         throw new Exception(jsonError("JSON NUMBER ERROR", "invalid number "
                                                            + number, buffer,
-                                      -number.length()));
+                                      -number.length() + 1));
       } // catch
   } // parseNum(BufferedReader)
 
@@ -236,16 +238,16 @@ public class JSONParser
   {
     // if the next chars spell out 'null', return null
     // otherwise throw exception
-    if (buffer.read() == 'n' && buffer.read() == 'u' && buffer.read() == 'l'
-        && buffer.read() == 'l')
+    char nullarr[] = { 'n', 'u', 'l', 'l' };
+    for (char c : nullarr)
       {
-        return null;
-      } // if
-    else
-      {
-        throw new Exception(jsonError("JSON NULL ERROR",
-                                      "expected input \"null\"", buffer));
-      }// else
+        if (buffer.read() != c)
+          {
+            throw new Exception(jsonError("JSON NULL ERROR",
+                                          "expected input \"null\"", buffer));
+          }
+      }
+    return null;
   } // Object parseNull(IndexedBufferedReader)
 
   /**
@@ -322,7 +324,8 @@ public class JSONParser
     int c;
     if (buffer.read() != '"')
       {
-        throw new Exception("");
+        throw new Exception(jsonError("JSON STRING ERROR",
+                                      "string must start with \"", buffer));
       }
     while ((c = buffer.peek()) != '"')
       {
@@ -336,7 +339,7 @@ public class JSONParser
               throw new Exception(
                                   jsonError("JSON STRING ERROR",
                                             "no closing \" before end of input",
-                                            buffer, 1));
+                                            buffer));
             default:
               // add all chars to string
               builder.append((char) buffer.read());
@@ -353,7 +356,9 @@ public class JSONParser
     int c = buffer.read();
     if (c != '\\')
       {
-        throw new Exception("");
+        throw new Exception(jsonError("JSON STRING ERROR",
+                                      "escape characters must start with \\",
+                                      buffer));
       }
     else
       {
@@ -381,15 +386,16 @@ public class JSONParser
           }
         else if (c == -1)
           {
-            throw new Exception(jsonError("JSON STRING ERROR",
-                                          "no closing \" before end of input",
+            throw new Exception(
+                                jsonError("JSON STRING ERROR",
+                                          "unfinished escape character, no closing \" before end of input",
                                           buffer));
           }
         else
           {
             throw new Exception(jsonError("JSON STRING ERROR",
                                           "invalid escape character \\"
-                                              + (char) c, buffer));
+                                              + (char) c, buffer, -1));
           }
       } // else
   }
@@ -521,16 +527,15 @@ public class JSONParser
                                           jsonError("JSON OBJECT ERROR",
                                                     "invalid character '"
                                                         + (char) c
-                                                        + "', expected key string",
+                                                        + "', expected start of key string",
                                                     buffer));
                     }
                 }
               // else if we don't have a value, the next char should be ':'
               else if (!value_found)
                 {
-                  if (c == ':')
+                  if ((c = buffer.read()) == ':')
                     {
-                      buffer.read();
                       value = parse(buffer);
                       value_found = true;
                     }
