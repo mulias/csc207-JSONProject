@@ -26,10 +26,8 @@ public class JSONParser
 
   /*
    * CITATION:
-   * http://stackoverflow.com/questions/15842239/how-to-cast-a-string-to
-   * -an-url-in-java http://www.mkyong.com/java/how-to-get-url-content-in-java/
-   * http
-   * ://www.mkyong.com/java/how-to-read-file-from-java-bufferedreader-example/
+   * http://stackoverflow.com/questions/15842239/how-to-cast-a-string-to-an-url-in-java http://www.mkyong.com/java/how-to-get-url-content-in-java/
+   * http://www.mkyong.com/java/how-to-read-file-from-java-bufferedreader-example/
    * http://www.tutorialspoint.com/design_pattern/mvc_pattern.htm
    */
   public Object parseFromSource(String jsonSource)

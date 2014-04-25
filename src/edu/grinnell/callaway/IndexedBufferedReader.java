@@ -5,8 +5,7 @@ import java.io.IOException;
 import java.io.Reader;
 
 public class IndexedBufferedReader
-    extends
-      BufferedReader
+    extends BufferedReader
 {
 
   /**
