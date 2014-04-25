@@ -1,8 +1,14 @@
 package edu.grinnell.callaway;
 
 import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.StringReader;
 import java.math.BigDecimal;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -16,6 +22,14 @@ import java.util.Vector;
  */
 public class JSONParser
 {
+
+  public Object parseFromSource(Reader in)
+    throws Exception
+  {
+    BufferedReader text = new BufferedReader(in);
+    in.close();
+    return this.parse(text);
+  }// Object parse(String str)
 
   /**
    * parse JSON string to java Object
@@ -577,4 +591,43 @@ public class JSONParser
     str = str.substring(0, str.length() - 1) + "]";
     return str;
   } // vecToString(Vector)
+
+  /*
+   * 
+   */
+  public Object handleJSONSource(String jsonSource)
+    throws Exception
+  {
+
+    //URL start with an "h", as in "http(s)..."
+    //file locations start with a "/", "/home/..."
+    char firstChar = jsonSource.charAt(0);
+    if (firstChar == 'h')
+      {
+        //get URL
+        //open connection
+        URL url = new URL(jsonSource);
+        URLConnection connect = url.openConnection();
+        try
+          {
+            return parseFromSource(new InputStreamReader(
+                                                         connect.getInputStream()));
+          }
+        catch (MalformedURLException e)
+          {
+            throw new MalformedURLException("MalformedURLException: " + e);
+          }
+      }
+    else if (firstChar == '/')
+      {
+        return parseFromSource(new FileReader(jsonSource));
+
+      }
+    else
+      {
+        throw new Exception(
+                            "Entered string is neither a URL nor a file location");
+      }
+  }//handleURL( String jsonURL)
+
 }// JSONParser

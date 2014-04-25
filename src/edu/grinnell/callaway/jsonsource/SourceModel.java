@@ -7,6 +7,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
+import edu.grinnell.callaway.JSONParser;
+
 /*
  * CITATION:http://stackoverflow.com/questions/15842239/how-to-cast-a-string-to-an-url-in-java
  *              http://www.mkyong.com/java/how-to-get-url-content-in-java/
@@ -41,13 +43,23 @@ public class SourceModel
               {
                 jsonOut = jsonOut + fileLine;
               }//while
+            
+            URL url = new URL(jsonSource);
+            URLConnection connect = url.openConnection();
+            JSONParser parser = new JSONParser();
+            return parser.parseFromSource(new InputStreamReader(connect.getInputStream()));
+            
+            
+            
+            
+            
             in.close();
           }//try
         catch (MalformedURLException e)
           {
             throw new MalformedURLException("MalformedURLException: " + e);
           }//catch
-
+          
         return jsonOut;
       }
     else if (firstChar == 'h')

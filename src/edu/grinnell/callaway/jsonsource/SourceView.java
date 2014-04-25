@@ -13,7 +13,7 @@ PrintWriter pen = new PrintWriter(System.out, true);
     throws IOException
 
   {
-    String jsonURL;
+    String jsonSource;
     BufferedReader in;
     
     pen.println("URL example: http://yourDomain.com/file.json");
@@ -23,14 +23,14 @@ PrintWriter pen = new PrintWriter(System.out, true);
 
     try
       {
-        jsonURL = in.readLine();
+        jsonSource = in.readLine();
       }
     catch (IOException e)
       {
         throw new IOException("IOException: " + e);
       }
     in.close();
-    return jsonURL;
+    return jsonSource;
   }//String getURL()
 
   /*

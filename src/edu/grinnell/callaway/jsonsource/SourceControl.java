@@ -32,8 +32,7 @@ public class SourceControl
   /*
    * 
    */
-  public void control() throws Exception{
-    model.handleJSONSource(view.getJSONSource());
-    view.finishSignal();
+  public String control() throws Exception{
+   return model.handleJSONSource(view.getJSONSource());
   }//control() 
 }//SourceControl
