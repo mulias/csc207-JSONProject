@@ -1,24 +1,14 @@
 package edu.grinnell.callaway.jsonsource;
 
+import edu.grinnell.callaway.JSONParser;
+
 /*
  * Citation: http://www.mkyong.com/java/how-to-get-url-content-in-java/
  * http://www.tutorialspoint.com/design_pattern/mvc_pattern.htm
  */
 public class SourceControl
 {
-  /*
-    ****** <----Call View----(2)-- *********** <----CAll---(1)----- ********
-    |VIEW| -(3)-send URl addr----> | CONTROL | -return string-(6)-> | CALL |
-    ****** <-Completion signal-(6) ***********                      ********
-                                      |     ^
-                       Send URL/fileLoc(4)  |    
-                                      |     |
-                                      |   Send file location(5)
-                                      v     |
-                                    **********
-                                    *  MODEL * maybe 
-                                    **********
-   */
+ 
   
   SourceModel model;
   SourceView view;
@@ -29,10 +19,21 @@ public class SourceControl
     this.view = view;
   }//SourceControl(SourceModel model, SourceView view)
   
-  /*
-   * 
-   */
-  public String control() throws Exception{
-   return model.handleJSONSource(view.getJSONSource());
+
+  public Object control(){
+    Object result =null;
+     SourceView A = new SourceView.getInputType();
+     String inputSignal = A.parseSignal;
+     String value = A.JSONString;
+    if (inputSignal.equals("A")){
+      result=JSONParser.parse(value);
+    }
+    else if (inputSignal.equals("B")){
+      result= JSONParser.parseFromSource(value);
+    }
+    else{
+      throw new Exception ("wrong input");
+    }
+   return result;
   }//control() 
 }//SourceControl
