@@ -672,22 +672,25 @@ public class JSONParser
    * Converts a given JSON value (in the form of a Java object) into a string
    * 
    * @param obj
-   * @return
+   *         a JSON object
+   * @return JSON string
    */
   @SuppressWarnings("unchecked")
   public String toJSONString(Object obj)
   {
     if (obj == null)
       return "null";
+    // process a hashMap
     else if (obj.getClass().equals(HashMap.class))
       return objToString((HashMap<String, Object>) obj);
+    // process a Vector
     else if (obj.getClass().equals(Vector.class))
       return vecToString((Vector<?>) obj);
     else if (obj.getClass().equals(String.class))
       return "\"" + obj.toString() + "\"";
     else
       return obj.toString();
-  }
+  } // toJSONString(obj)
 
   /*
    * We got some ideas for how to get the key value from:
@@ -697,6 +700,7 @@ public class JSONParser
    * Converts the key-value pairs from the given hashMap into a String
    * 
    * @param hash
+   *          a HashMap
    * @return String
    */
   @SuppressWarnings("unchecked")
@@ -710,15 +714,18 @@ public class JSONParser
 
         if (val == null)
           str += val + ",";
+        // process HashMap
         else if (val.getClass().equals(HashMap.class))
           str += objToString((HashMap<String, Object>) val) + ",";
         else if (val.getClass().equals(String.class))
           str += "\"" + val + "\",";
+        // process Vector
         else if (val.getClass().equals(Vector.class))
           str += vecToString((Vector<?>) val) + ",";
         else
           str += val + ",";
       } // for (key)
+    
     str = str.substring(0, str.length() - 1) + "}";
     return str;
   } // toStr(HashMap)
@@ -727,6 +734,7 @@ public class JSONParser
    * Converts a vector into a string.
    * 
    * @param vec
+   *          a Vector
    * @return String
    */
   @SuppressWarnings("unchecked")
@@ -740,8 +748,10 @@ public class JSONParser
 
         if (val == null)
           str += val + ",";
+        // process a Vector
         else if (val.getClass().equals(Vector.class))
           str += vecToString((Vector<?>) val) + ",";
+        // process a HashMap
         else if (val.getClass().equals(HashMap.class))
           str += objToString((HashMap<String, Object>) val) + ",";
         else if (val.getClass().equals(String.class))
