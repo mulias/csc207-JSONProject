@@ -54,7 +54,7 @@ public class JSONParser
             return parse(new InputStreamReader(connect.getInputStream()));
           }
         // Support for both linux and Windows style paths
-        else if (firstChar == '\\' || firstChar == 'C')
+        else if (firstChar == '/' || firstChar == 'C')
           {
             // a local file
             return parse(new FileReader(jsonSource));
