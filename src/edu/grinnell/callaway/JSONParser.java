@@ -584,11 +584,8 @@ public class JSONParser
       }
     pointer += '^';
     // full error string
-    String str =
-        '\n' + header + '(' + index + "): " + body + '\n'
-            + buffer.currentLine() + '\n' + pointer;
-    System.out.println(str);
-    return str;
+    return '\n' + header + '(' + index + "): " + body + '\n'
+           + buffer.currentLine() + '\n' + pointer;
   }
 
   /**

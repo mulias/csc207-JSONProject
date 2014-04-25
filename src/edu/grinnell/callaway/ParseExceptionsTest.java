@@ -21,7 +21,6 @@ public class ParseExceptionsTest
     parser.parseFromSource("");
   }
   
-  /*
   @Test
   public void numberTest2()
     throws Exception
@@ -40,5 +39,4 @@ public class ParseExceptionsTest
     thrown.expectMessage("\nJSON NUMBER ERROR(L1:C0): invalid number 13+\n13+\n^");
     parser.parseFromSource("13+");
   }
-  */
 }
