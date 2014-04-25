@@ -1,0 +1,67 @@
+JSON NULL ERROR(L1:C2): expected input "null"
+nunya
+  ^
+
+JSON STRING ERROR(L1:C6): no closing " before end of input
+"string
+      ^
+
+JSON STRING ERROR(L1:C8): invalid escape character \q
+"string \q"
+        ^
+
+JSON STRING ERROR(L1:C1): invalid escape character \x
+"\x"
+ ^
+
+JSON STRING ERROR(L1:C8): unfinished escape character, no closing " before end of input
+"string \
+        ^
+
+JSON Object ERROR(L1:C12): no closing } before end of input
+{ "one":true 
+            ^
+
+JSON OBJECT ERROR(L1:C1): invalid character 'f', expected start of key string
+{ false:true }
+ ^
+
+JSON OBJECT ERROR(L1:C8): invalid character '@', expected value for key:value pair
+{ "test"@true }
+        ^
+
+JSON ARRAY ERROR(L1:C19): no closing ] before end of input
+[ true, null, false 
+                   ^
+
+JSON NUMBER ERROR(L1:C0): invalid number 15-
+15-
+^
+
+JSON NUMBER ERROR(L1:C0): invalid number 13+
+13+
+^
+
+JSON NUMBER ERROR(L1:C0): invalid number 13E.5
+13E.5
+^
+
+JSON ERROR(L1:C0): Invalid input character a
+a
+^
+
+JSON ERROR(L1:C0): Invalid input character @
+@
+^
+
+JSON ERROR(L1:C0): Invalid input character }
+}
+^
+
+JSON BOOLEAN ERROR(L1:C2): expected input "false"
+fake
+  ^
+
+JSON BOOLEAN ERROR(L1:C3): expected input "true"
+truqqqqqq
+   ^
