@@ -16,12 +16,12 @@ public class JSONTester
   JSONParser parser = new JSONParser();
 
   /**
-   * Test the individual values with toStr
+   * Test the individual values with toJSONString()
    * 
    * @throws Exception
    */
   @Test
-  public void toStrTestVals()
+  public void toStringTestVals()
     throws Exception
   {
     assertEquals("1. true", "true", parser.toJSONString(true));
@@ -38,12 +38,12 @@ public class JSONTester
   } // toStrTestVals
 
   /**
-   * Test Objects and Vectors with toStr
+   * Test Objects and Vectors with toJSONString
    * 
    * @throws Exception
    */
   @Test
-  public void toStrTestObVec()
+  public void toStringTestObVec()
     throws Exception
   {
     HashMap<String, Object> hash = new HashMap<String, Object>(8);
@@ -58,7 +58,8 @@ public class JSONTester
     vector2.add(vector);
     vector2.add(2);
 
-    assertEquals("2. vector in vector", "[[1,2],2]", parser.toJSONString(vector2));
+    assertEquals("2. vector in vector", "[[1,2],2]",
+                 parser.toJSONString(vector2));
 
     HashMap<String, Object> hmap = new HashMap<String, Object>(3);
 
@@ -90,6 +91,10 @@ public class JSONTester
                  parser.toJSONString(hash));
   } // toStrTestObVec
 
+  /**
+   * Check the parser for errors.
+   * @throws Exception
+   */
   @Test
   public void parseTest()
     throws Exception
@@ -127,16 +132,10 @@ public class JSONTester
 
   } // parseTest()
 
-  public String replaceMult(String text)
-  {
-    /* text = text.replace("\t", "");
-     text = text.replace(" ", "");
-     text = text.replace("\n", "");
-     text = text.replace("\n", "");*/
-    text = text.replaceAll("\\s+", "");
-    return text;
-  }
-
+  /**
+   * Check that the parser can take and successfully process input from a file.
+   * @throws Exception
+   */
   @Test
   public void pathTest()
     throws Exception
@@ -154,6 +153,10 @@ public class JSONTester
                                                      + "/JSONfile.json")));
   }
 
+  /**
+   * Check to make sure that the parser can take and process links to JSON files on a website.
+   * @throws Exception
+   */
   @Test
   public void linkTest()
     throws Exception
