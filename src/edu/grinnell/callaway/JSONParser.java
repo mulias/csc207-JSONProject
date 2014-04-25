@@ -53,8 +53,8 @@ public class JSONParser
             URLConnection connect = url.openConnection();
             return parse(new InputStreamReader(connect.getInputStream()));
           }
-        // Support for both linux and Windows style paths
-        else if (firstChar == '/' || firstChar == 'C')
+        // Support for both linux (/) and Windows style paths (starting with either C: or \)
+        else if (firstChar == '/' || firstChar == 'C' || firstChar == '\\')
           {
             // a local file
             return parse(new FileReader(jsonSource));
