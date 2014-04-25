@@ -3,6 +3,9 @@ package edu.grinnell.callaway;
 import static org.junit.Assert.*;
 
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -123,17 +126,43 @@ public class JSONTester
                  parser.toStr(parser.parseFromSource("\"\\u2300\"")));
 
   } // parseTest()
-  
+
+  public String replaceMult(String text)
+  {
+    /* text = text.replace("\t", "");
+     text = text.replace(" ", "");
+     text = text.replace("\n", "");
+     text = text.replace("\n", "");*/
+    text = text.replaceAll("\\s+", "");
+    return text;
+  }
+
   @Test
   public void pathTest()
-      throws Exception
-    {
-      assertEquals("unicode",
-                   "{\"lastName\":\"Smith\"," + "\"age\":25,"
-                       + "\"height_cm\":167.64," + "\"firstName\":\"John\","
-                       + "\"isAlive\":true}",
-                   parser.toStr(parser.parseFromSource(System.getProperty("user.dir")
-                                                             .toString()
-                                                       + "/JSONfile.json")));
-    }
+    throws Exception
+  {
+    // JSON string from-- http://en.wikipedia.org/wiki/JSON
+    // http://stackoverflow.com/questions/4871051/getting-the-current-working-directory-in-java
+    // http://stackoverflow.com/questions/14169661/read-complete-file-without-using-loop-in-java
+
+    String text =
+        new String(Files.readAllBytes(Paths.get("JSONfileExpected.json")),
+                   StandardCharsets.UTF_8);
+    assertEquals("path",
+                 text,
+                 parser.toStr(parser.parseFromSource(System.getProperty("user.dir")
+                                                     + "/JSONfile.json")));
+  }
+
+  @Test
+  public void linkTest()
+    throws Exception
+  {
+    String text =
+        new String(Files.readAllBytes(Paths.get("JSONlinkExpected.json")),
+                   StandardCharsets.UTF_8);
+    assertEquals("link",
+                 text,
+                 parser.toStr(parser.parseFromSource("http://grinnellappdev.com/tutorials/appdev_directory.json")));
+  }
 } // class JSONTester
