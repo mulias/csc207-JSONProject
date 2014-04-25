@@ -35,6 +35,11 @@ public class JSONParser
   public Object parseFromSource(String jsonSource)
     throws Exception
   {
+    // return normal empty string error, do not check first char
+    if (jsonSource.isEmpty())
+      {
+        return parse(new StringReader(jsonSource));
+      }
     // URL start with an "h", as in "http(s)..."
     // file locations start with a "/", "/home/..."
     // otherwise assume source is a json string
@@ -43,18 +48,19 @@ public class JSONParser
         char firstChar = jsonSource.charAt(0);
         if (firstChar == 'h')
           {
-            // get URL
-            // open connection
+            // get URL, open connection
             URL url = new URL(jsonSource);
             URLConnection connect = url.openConnection();
             return parse(new InputStreamReader(connect.getInputStream()));
           }
         else if (firstChar == '/')
           {
+            // a local file
             return parse(new FileReader(jsonSource));
           }
         else
           {
+            // a string
             return parse(new StringReader(jsonSource));
           }
       }
@@ -212,7 +218,7 @@ public class JSONParser
       {
         throw new Exception(jsonError("JSON NUMBER ERROR", "invalid number "
                                                            + number, buffer,
-                                      -number.length() + 1));
+                                      -number.length()));
       } // catch
   } // parseNum(BufferedReader)
 
@@ -370,7 +376,7 @@ public class JSONParser
         else if (c == 'u')
           {
             String unicode = "";
-            for(int i = 0; i < 4; i++)
+            for (int i = 0; i < 4; i++)
               {
                 char num = (char) buffer.read();
                 if (Character.isDigit(num) || Character.isAlphabetic(num))
@@ -578,8 +584,11 @@ public class JSONParser
       }
     pointer += '^';
     // full error string
-    return '\n' + header + '(' + index + "): " + body + '\n'
-           + buffer.currentLine() + '\n' + pointer;
+    String str =
+        '\n' + header + '(' + index + "): " + body + '\n'
+            + buffer.currentLine() + '\n' + pointer;
+    System.out.println(str);
+    return str;
   }
 
   /**
