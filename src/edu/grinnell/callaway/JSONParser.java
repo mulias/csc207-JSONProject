@@ -1,7 +1,8 @@
 package edu.grinnell.callaway;
 
-import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
@@ -29,28 +30,64 @@ public class JSONParser
     return SourceControl.control();
   }
 
-  public Object parseFromSource(Reader in)
-    throws Exception
-  {
-    BufferedReader text = new BufferedReader(in);
-    in.close();
-    return this.parse(text);
-  }// Object parse(String str)
-
-  /**
-   * parse JSON string to java Object
-   * 
-   * @param String
-   * @return Object
-   * @pre string is formated JSON code
-   * @post the JSON string has been translated into a java object
-   * @throws Exception
+  /*
+   * CITATION:
+   * http://stackoverflow.com/questions/15842239/how-to-cast-a-string-to
+   * -an-url-in-java http://www.mkyong.com/java/how-to-get-url-content-in-java/
+   * http
+   * ://www.mkyong.com/java/how-to-read-file-from-java-bufferedreader-example/
+   * http://www.tutorialspoint.com/design_pattern/mvc_pattern.htm
    */
-  public Object parse(String str)
+  public Object parseFromSource(String jsonSource)
     throws Exception
   {
-    BufferedReader text = new BufferedReader(new StringReader(str));
-    return this.parse(text);
+    // return normal empty string error, do not check first char
+    if (jsonSource.isEmpty())
+      {
+        return parse(new StringReader(jsonSource));
+      }
+    // URL start with an "h", as in "http(s)..."
+    // file locations start with a "/", "/home/..."
+    // otherwise assume source is a json string
+    try
+      {
+        char firstChar = jsonSource.charAt(0);
+        if (firstChar == 'h')
+          {
+            // get URL, open connection
+            URL url = new URL(jsonSource);
+            URLConnection connect = url.openConnection();
+            return parse(new InputStreamReader(connect.getInputStream()));
+          }
+        // Support for both linux (/) and Windows style paths (starting with either C: or \)
+        else if (firstChar == '/' || firstChar == 'C' || firstChar == '\\')
+          {
+            // a local file
+            return parse(new FileReader(jsonSource));
+          }
+        else
+          {
+            // a string
+            return parse(new StringReader(jsonSource));
+          }
+      }
+    catch (MalformedURLException e)
+      {
+        throw new MalformedURLException("MalformedURLException: " + e);
+      }
+    catch (FileNotFoundException e)
+      {
+        throw new FileNotFoundException("");
+      }
+  }// parseFromSource(String)
+
+  public Object parse(Reader in)
+    throws Exception
+  {
+    IndexedBufferedReader buffer = new IndexedBufferedReader(in);
+    Object json = parse(buffer);
+    buffer.close();
+    return json;
   }// Object parse(String str)
 
   /**
@@ -62,7 +99,7 @@ public class JSONParser
    * @post the JSON string has been translated into a java object
    * @throws Exception
    */
-  public Object parse(BufferedReader buffer)
+  public Object parse(IndexedBufferedReader buffer)
     throws Exception
   {
     // mark each space in buffer before advancing one
@@ -74,11 +111,9 @@ public class JSONParser
     // // use the mark to back up one char and then parse the object
     // if the end of the buffer is reached before an object is found
     // // throw exception
-    boolean buffer_end = false;
-    while (!buffer_end)
+    int c;
+    while ((c = buffer.peek()) != -1)
       {
-        buffer.mark(1);
-        int c = buffer.read();
         switch (c)
           {
             case ' ':
@@ -88,6 +123,8 @@ public class JSONParser
             case '\b':
             case '\f':
               // ignore whitespace chars
+              // advance to next char
+              buffer.read();
               break;
             case '{':
               // object
@@ -100,15 +137,12 @@ public class JSONParser
               return parseString(buffer);
             case 't':
               // true
-              buffer.reset();
               return parseTrue(buffer);
             case 'f':
               // false
-              buffer.reset();
               return parseFalse(buffer);
             case 'n':
               // null
-              buffer.reset();
               return parseNull(buffer);
             case '0':
             case '1':
@@ -124,19 +158,16 @@ public class JSONParser
             case '+':
             case '.':
               // number
-              buffer.reset();
               return parseNum(buffer);
-            case -1:
-              // end of buffer
-              buffer_end = true;
-              break;
-            // otherwise error
             default:
-              throw new Exception("JSON ERROR: Invalid input character " + c);
+              // otherwise error
+              throw new Exception(jsonError("JSON ERROR",
+                                            "Invalid input character "
+                                                + (char) c, buffer));
           } // switch(c)
-      } // while (!buffer_end)
-    throw new Exception("JSON ERROR: no json values found in input");
-  } // parse(BufferedReader)
+      } // while
+    throw new Exception('\n' + "JSON ERROR: no json values found in input");
+  } // parse(IndexedBufferedReader)
 
   /**
    * Parse JSON string/bufferedReader into a java BigDecimal
@@ -147,7 +178,7 @@ public class JSONParser
    * @return
    * @throws Exception
    */
-  public BigDecimal parseNum(BufferedReader buffer)
+  public BigDecimal parseNum(IndexedBufferedReader buffer)
     throws Exception
   {
     // use a StringBuilder to stick nums together
@@ -159,9 +190,7 @@ public class JSONParser
     boolean num_end = false;
     while (!num_end)
       {
-        buffer.mark(1);
-        int n = buffer.read();
-        switch (n)
+        switch (buffer.peek())
           {
             case '0':
             case '1':
@@ -179,12 +208,11 @@ public class JSONParser
             case '+':
             case '.':
               // build number
-              builder.append((char) n);
+              builder.append((char) buffer.read());
               break;
             // any non-number char, including buffer end
             default:
               num_end = true;
-              buffer.reset();
               break;
           } // switch (n)
       } // while (!num_end)
@@ -195,7 +223,9 @@ public class JSONParser
       } // try
     catch (NumberFormatException e)
       {
-        throw new Exception("JSON NUMBER ERROR: invalid number" + number);
+        throw new Exception(jsonError("JSON NUMBER ERROR", "invalid number "
+                                                           + number, buffer,
+                                      -number.length()));
       } // catch
   } // parseNum(BufferedReader)
 
@@ -207,7 +237,7 @@ public class JSONParser
    * @return
    * @throws Exception
    */
-  public Object parseNull(BufferedReader buffer)
+  public Object parseNull(IndexedBufferedReader buffer)
     throws Exception
   {
     // if the next chars spell out 'null', return null
@@ -216,13 +246,13 @@ public class JSONParser
         && buffer.read() == 'l')
       {
         return null;
-      }// if
+      } // if
     else
       {
-        throw new Exception(
-                            "JSON NULL ERROR: precondtion not met, input not \"null\"");
+        throw new Exception(jsonError("JSON NULL ERROR",
+                                      "expected input \"null\"", buffer));
       }// else
-  }// Object parseNull(BufferedReader buffer)
+  } // Object parseNull(IndexedBufferedReader)
 
   /**
    * Parse JSON to java boolean (true)
@@ -231,7 +261,7 @@ public class JSONParser
    * @pre buffer must be "true"
    * @throws Exception
    */
-  public boolean parseTrue(BufferedReader buffer)
+  public Boolean parseTrue(IndexedBufferedReader buffer)
     throws Exception
   {
     // if the next chars spell out 'true', return true
@@ -240,13 +270,13 @@ public class JSONParser
         && buffer.read() == 'e')
       {
         return true;
-      }// if
+      } // if
     else
       {
-        throw new Exception(
-                            "JSON BOOLEAN ERROR: precondition not met, input not \"true\"");
+        throw new Exception(jsonError("JSON BOOLEAN ERROR",
+                                      "expected input \"true\"", buffer));
       }// else
-  }// parseTrue(BufferedReader buffer)
+  }// parseTrue(IndexedBufferedReader)
 
   /**
    * Parse JSON to java boolean (false)
@@ -255,7 +285,7 @@ public class JSONParser
    * @pre buffer must be "false"
    * @throws Exception
    */
-  public boolean parseFalse(BufferedReader buffer)
+  public Boolean parseFalse(IndexedBufferedReader buffer)
     throws Exception
   {
     // if the next chars spell out 'true', return true
@@ -264,13 +294,13 @@ public class JSONParser
         && buffer.read() == 's' && buffer.read() == 'e')
       {
         return false;
-      }// if
+      } // if
     else
       {
-        throw new Exception(
-                            "JSON BOOLEAN ERROR: precondition not met, value not \"false\"");
-      }// else
-  }// parseFalse(BufferedReader buffer)
+        throw new Exception(jsonError("JSON BOOLEAN ERROR",
+                                      "expected input \"false\"", buffer));
+      } // else
+  } // parseFalse(IndexedBufferedReader)
 
   /**
    * Parse JSON string
@@ -281,7 +311,7 @@ public class JSONParser
    * @return Java string
    * @throws Exception
    */
-  public String parseString(BufferedReader buffer)
+  public String parseString(IndexedBufferedReader buffer)
     throws Exception
   {
     // save each char to a StringBuilder
@@ -295,55 +325,80 @@ public class JSONParser
     // if c is any other char
     // // add it
     StringBuilder builder = new StringBuilder();
-    boolean str_end = false;
-    while (!str_end)
+    int c;
+    if (buffer.read() != '"')
       {
-        int c = buffer.read();
+        throw new Exception("");
+      }
+    while ((c = buffer.peek()) != '"')
+      {
         switch (c)
           {
-            case '\n':
-            case '\t':
-            case '\r':
-            case '\b':
-            case '\f':
-              // ignore whitespace chars
-              break;
             case '\\':
-              // escape char for " or \
-              // json should support \/, but java doesn't
-              c = buffer.read();
-              if (c == '"' || c == '\\')
-                {
-                  builder.append((char) c);
-                } // if
-              else if (c == -1)
-                {
-                  throw new Exception(
-                                      "JSON STRING ERROR: no closing \" before end of input");
-                }
-              else
-                {
-                  throw new Exception(
-                                      "JSON STRING ERROR: invalid escape character \\"
-                                          + c);
-                } // else
-              break;
-            case '"':
-              // string is done
-              str_end = true;
+              builder.append(parseEscapeChar(buffer));
               break;
             case -1:
               // reach end of json before ending string
               throw new Exception(
-                                  "JSON STRING ERROR: no closing \" before end of input");
+                                  jsonError("JSON STRING ERROR",
+                                            "no closing \" before end of input",
+                                            buffer, 1));
             default:
               // add all chars to string
-              builder.append((char) c);
+              builder.append((char) buffer.read());
               break;
           }// switch(C)
       }// while
+    buffer.read();
     return builder.toString();
-  }// String parseString(BufferedReader buffer)
+  }// String parseString(IndexedBufferedReader)
+
+  public char parseEscapeChar(IndexedBufferedReader buffer)
+    throws Exception
+  {
+    int c = buffer.read();
+    if (c != '\\')
+      {
+        throw new Exception("");
+      }
+    else
+      {
+        c = buffer.read();
+        if (c == '"' || c == '\\' || c == '/')
+          {
+            return (char) c;
+          }
+        else if (c == 'u')
+          {
+            String unicode = "";
+            for (int i = 0; i < 4; i++)
+              {
+                char num = (char) buffer.read();
+                if (Character.isDigit(num) || Character.isAlphabetic(num))
+                  {
+                    unicode += num;
+                  }
+                else
+                  {
+                    throw new Exception("");
+                  }
+              }
+            return (char) Integer.parseInt(unicode, 16);
+          }
+        else if (c == -1)
+          {
+            throw new Exception(jsonError("JSON STRING ERROR",
+                                          "no closing \" before end of input",
+                                          buffer));
+          }
+        else
+          {
+            throw new Exception(jsonError("JSON STRING ERROR",
+                                          "invalid escape character \\"
+                                              + (char) c, buffer));
+          }
+      } // else
+  }
 
   /**
    * Parse Jason Array
@@ -353,7 +408,7 @@ public class JSONParser
    * @return Vector
    * @throws Exception
    */
-  public Vector<Object> parseArray(BufferedReader buffer)
+  public Vector<Object> parseArray(IndexedBufferedReader buffer)
     throws Exception
   {
     // save values in array to a vector
@@ -368,12 +423,13 @@ public class JSONParser
     // if end of buffer
     // // throw exception
     Vector<Object> vec = new Vector<Object>();
-    boolean array_end = false;
-    boolean value_found = false;
-    while (!array_end)
+    int c;
+    if (buffer.read() != '[')
       {
-        buffer.mark(1);
-        int c = buffer.read();
+        throw new Exception("");
+      }
+    while ((c = buffer.peek()) != ']')
+      {
         switch (c)
           {
             case ' ':
@@ -382,37 +438,25 @@ public class JSONParser
             case '\r':
             case '\b':
             case '\f':
-              // ignore whitespace chars
-              break;
             case ',':
-              // if we were looking for ',' find a new value
-              if (value_found)
-                {
-                  value_found = false;
-                }// if
-              else
-                {
-                  throw new Exception(
-                                      "JSON ARRAY ERROR: missplaced comma in array list");
-                }
-              break;
-            case ']':
-              array_end = true;
+              // ignore whitespace chars
+              // advance to next char
+              buffer.read();
               break;
             case -1:
               // end of buffer before array end
-              throw new Exception(
-                                  "JSON ARRAY ERROR: no closing ] before end of input");
+              throw new Exception(jsonError("JSON ARRAY ERROR",
+                                            "no closing ] before end of input",
+                                            buffer));
             default:
               // parse value
-              buffer.reset();
               vec.add(parse(buffer));
-              value_found = true;
               break;
           }// switch (c)
       }// while
+    buffer.read();
     return vec;
-  }// parseArray(BufferedReader buffer)
+  }// parseArray(IndexedBufferedReader)
 
   /**
    * Parse Jason Object
@@ -423,7 +467,7 @@ public class JSONParser
    * @return HashMap
    * @throws Exception
    */
-  public HashMap<String, Object> parseObject(BufferedReader buffer)
+  public HashMap<String, Object> parseObject(IndexedBufferedReader buffer)
     throws Exception
   {
     // save values in object to a HashMap
@@ -442,76 +486,108 @@ public class JSONParser
     HashMap<String, Object> hash = new HashMap<String, Object>();
     boolean key_found = false;
     boolean value_found = false;
-    boolean hash_end = false;
     String key = null;
     Object value = null;
-    while (!hash_end)
+    int c;
+    // check that first char opens the object with '{'
+    if (buffer.read() != '{')
       {
-        buffer.mark(1);
-        int c = buffer.read();
-        // if key is not found
+        throw new Exception("");
+      }
+    while ((c = buffer.peek()) != '}')
+      {
         switch (c)
           {
-            case ',':
             case ' ':
             case '\n':
             case '\t':
             case '\r':
             case '\b':
             case '\f':
+            case ',':
               // ignore whitespace chars
-              break;
-            case '"':
-              if (!key_found)
-                {
-                  buffer.reset();
-                  key = (String) parse(buffer);
-                  key_found = true;
-                }// if
-              else
-                {
-                  throw new Exception("JSON OBJECT ERROR: invalid character "
-                                      + c);
-                } // else
-              break;
-            case ':':
-              if (key_found && !value_found)
-                {
-                  value = parse(buffer);
-                  value_found = true;
-                }// if
-              else
-                {
-                  throw new Exception(
-                                      "JSON OBJECT ERROR: missplaced ':', should seperate key:value pairs");
-                }
-              break;
-            case '}':
-              if (key_found)
-                {
-                  throw new Exception(
-                                      "JSON OBJECT ERROR: unresolved key value pair");
-                } // if
-              else
-                {
-                  hash_end = true;
-                }// else
+              // advance to next char
+              buffer.read();
               break;
             case -1:
-              throw new Exception(
-                                  "JSON OBJECT ERROR: no closing } before end of input");
+              throw new Exception(jsonError("JSON Object ERROR",
+                                            "no closing } before end of input",
+                                            buffer));
             default:
-              throw new Exception("JSON OBJECT ERROR: invalid character " + c);
+              if (!key_found)
+                {
+                  if (c == '"')
+                    {
+                      key = (String) parse(buffer);
+                      key_found = true;
+                    }
+                  else
+                    {
+                      throw new Exception(
+                                          jsonError("JSON OBJECT ERROR",
+                                                    "invalid character '"
+                                                        + (char) c
+                                                        + "', expected key string",
+                                                    buffer));
+                    }
+                }
+              // else if we don't have a value, the next char should be ':'
+              else if (!value_found)
+                {
+                  if (c == ':')
+                    {
+                      buffer.read();
+                      value = parse(buffer);
+                      value_found = true;
+                    }
+                  else
+                    {
+                      throw new Exception(
+                                          jsonError("JSON OBJECT ERROR",
+                                                    "invalid character '"
+                                                        + (char) c
+                                                        + "', expected value for key:value pair",
+                                                    buffer));
+                    }
+                }
+              break;
           }
         if (key_found && value_found)
           {
             hash.put(key, value);
             key_found = false;
             value_found = false;
-          }// if
-      }// while
+          }
+      } // while
+    buffer.read();
     return hash;
-  }// parseObject(BufferedReader buffer)
+  }// parseObject(IndexedBufferedReader)
+
+  public String jsonError(String header, String body,
+                          IndexedBufferedReader buffer)
+    throws IOException
+  {
+    return jsonError(header, body, buffer, 0);
+  }
+
+  public String jsonError(String header, String body,
+                          IndexedBufferedReader buffer, int offset)
+    throws IOException
+  {
+    // the line and character index of the error
+    String index = "L" + buffer.line() + ":" + "C" + (buffer.index() + offset);
+    // a pointer to mark the error in a string
+    String pointer = "";
+    int spaces = buffer.index + offset;
+    for (int i = 0; i < spaces; i++)
+      {
+        pointer += ' ';
+      }
+    pointer += '^';
+    // full error string
+    return '\n' + header + '(' + index + "): " + body + '\n'
+           + buffer.currentLine() + '\n' + pointer;
+  }
 
   /**
    * Converts a given JSON value (in the form of a Java object) into a string
@@ -597,48 +673,5 @@ public class JSONParser
     str = str.substring(0, str.length() - 1) + "]";
     return str;
   } // vecToString(Vector)
-
-  /*
-   * /*
-  * CITATION:http://stackoverflow.com/questions/15842239/how-to-cast-a-string-to-an-url-in-java
-  *              http://www.mkyong.com/java/how-to-get-url-content-in-java/
-  *              http://www.mkyong.com/java/how-to-read-file-from-java-bufferedreader-example/
-  * http://www.tutorialspoint.com/design_pattern/mvc_pattern.htm
-  */
-
-  public Object handleJSONSource(String jsonSource)
-    throws Exception
-  {
-
-    //URL start with an "h", as in "http(s)..."
-    //file locations start with a "/", "/home/..."
-    char firstChar = jsonSource.charAt(0);
-    if (firstChar == 'h')
-      {
-        //get URL
-        //open connection
-        URL url = new URL(jsonSource);
-        URLConnection connect = url.openConnection();
-        try
-          {
-            return parseFromSource(new InputStreamReader(
-                                                         connect.getInputStream()));
-          }
-        catch (MalformedURLException e)
-          {
-            throw new MalformedURLException("MalformedURLException: " + e);
-          }
-      }
-    else if (firstChar == '/')
-      {
-        return parseFromSource(new FileReader(jsonSource));
-
-      }
-    else
-      {
-        throw new Exception(
-                            "Entered string is neither a URL nor a file location");
-      }
-  }//handleURL( String jsonURL)
 
 }// JSONParser
