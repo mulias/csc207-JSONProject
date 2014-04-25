@@ -4,24 +4,22 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.io.Reader;
 
-public class SourceView
+public class InterfaceView
 {
-  Reader JSONString;
+  String inputString;
   String parseSignal;
 
-  public SourceView(Reader JSONString, String parseSignal)
+  public InterfaceView(String inputString, String parseSignal)
   {
-    this.JSONString = JSONString;
+    this.inputString = inputString;
     this.parseSignal = parseSignal;
   }
 
-  public SourceView getInputType()
+  public InterfaceView getInputType()
     throws IOException
   {
     PrintWriter pen = new PrintWriter(System.out, true);
-    SourceView JSONpackage = new SourceView(JSONString, parseSignal);
     BufferedReader in;
     pen.println("Please choose parse option");
     pen.println("Parse options: (A) JSONString (B) File location");
@@ -29,7 +27,7 @@ public class SourceView
     in = new BufferedReader(new InputStreamReader(System.in));
     try
       {
-        JSONpackage.parseSignal = in.readLine();
+        this.parseSignal = in.readLine();
       }
     catch (IOException e)
       {
@@ -37,9 +35,9 @@ public class SourceView
       }
     pen.println("Please enter JSONString or the JSONString file location(URL or local file");
 
-    JSONpackage.JSONString = new BufferedReader(new InputStreamReader(System.in));
-    
+     in = new BufferedReader(new InputStreamReader(System.in));
+    this.inputString =in.readLine();
     in.close();
-    return JSONpackage;
+    return this;
   }//String getURL()
 }//SourceView
