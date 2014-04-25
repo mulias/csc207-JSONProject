@@ -97,33 +97,33 @@ public class JSONTester
     assertEquals("1. JSON string",
                  "{\"Pro\":{\"FName\":\"Sam\",\"LName\":\"Rebelsky\"},"
                      + "\"Number\":207,\"Department\":\"CSC\"}",
-                 parser.toJSONString(parser.parseFromSource("{\"Department\":\"CSC\","
+                 parser.toJSONString(parser.parseFromString("{\"Department\":\"CSC\","
                                                      + " \"Number\":207, "
                                                      + "\"Pro\":{\"LName\":\"Rebelsky\","
                                                      + "\"FName\":\"Sam\"}}")));
     assertEquals("2. array", "[1,2,3]",
-                 parser.toJSONString(parser.parseFromSource("[1,2,3]")));
-    assertEquals("3. number", "34", parser.toJSONString(parser.parseFromSource("34")));
+                 parser.toJSONString(parser.parseFromString("[1,2,3]")));
+    assertEquals("3. number", "34", parser.toJSONString(parser.parseFromString("34")));
     assertEquals("4. decimal", "34.6",
-                 parser.toJSONString(parser.parseFromSource("34.6")));
+                 parser.toJSONString(parser.parseFromString("34.6")));
     assertEquals("5. enum", "3E+32",
-                 parser.toJSONString(parser.parseFromSource("3e32")));
+                 parser.toJSONString(parser.parseFromString("3e32")));
     assertEquals("6. null", "null",
-                 parser.toJSONString(parser.parseFromSource("null")));
+                 parser.toJSONString(parser.parseFromString("null")));
     assertEquals("7. true", "true",
-                 parser.toJSONString(parser.parseFromSource("true")));
+                 parser.toJSONString(parser.parseFromString("true")));
     assertEquals("8. false", "false",
-                 parser.toJSONString(parser.parseFromSource("false")));
+                 parser.toJSONString(parser.parseFromString("false")));
     assertEquals("9. negative", "-3.4",
-                 parser.toJSONString(parser.parseFromSource("-3.4")));
+                 parser.toJSONString(parser.parseFromString("-3.4")));
 
     assertEquals("10. things within things",
                  "{\"f\":{\"y\":2.9E+57,\"x\":\"it\"},"
                      + "\"e\":null,\"c\":\"The\",\"j\":[1,2]}",
-                 parser.toJSONString(parser.parseFromSource("{\"f\":{\"y\":29e56,\"x\":\"it\"},"
+                 parser.toJSONString(parser.parseFromString("{\"f\":{\"y\":29e56,\"x\":\"it\"},"
                                                      + "\"e\":null,\"j\":[1,2],\"c\":\"The\"}")));
     assertEquals("11. unicode", "\"\u2300\"",
-                 parser.toJSONString(parser.parseFromSource("\"\\u2300\"")));
+                 parser.toJSONString(parser.parseFromString("\"\\u2300\"")));
 
   } // parseTest()
 
@@ -150,7 +150,7 @@ public class JSONTester
                    StandardCharsets.UTF_8);
     assertEquals("path",
                  text,
-                 parser.toJSONString(parser.parseFromSource(System.getProperty("user.dir")
+                 parser.toJSONString(parser.parseFromFile(System.getProperty("user.dir")
                                                      + "/JSONfile.json")));
   }
 
@@ -163,6 +163,6 @@ public class JSONTester
                    StandardCharsets.UTF_8);
     assertEquals("link",
                  text,
-                 parser.toJSONString(parser.parseFromSource("http://grinnellappdev.com/tutorials/appdev_directory.json")));
+                 parser.toJSONString(parser.parseFromHTTP("http://grinnellappdev.com/tutorials/appdev_directory.json")));
   }
 } // class JSONTester
