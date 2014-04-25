@@ -5,10 +5,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
-
 /**
  * Displays messages for the user and reads user input to be used 
  * in the controller.
+ * @author Shaun, Mataire
+ * @author Mulhall, Elias
+ * @author Callaway, Erin M
  */
 public class InterfaceView
 {

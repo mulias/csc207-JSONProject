@@ -9,6 +9,9 @@ import edu.grinnell.callaway.JSONParser;
 /**
  * Changes the user input obtained by an InterfaceView into a JSON object 
  * and displays the object as a string.
+ * @author Shaun, Mataire
+ * @author Mulhall, Elias
+ * @author Callaway, Erin M
  */
 public class InterfaceControl
 {

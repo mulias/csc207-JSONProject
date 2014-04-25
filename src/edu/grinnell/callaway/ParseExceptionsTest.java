@@ -4,6 +4,13 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+/**
+ * 
+ *  * @author Shaun, Mataire
+ * @author Mulhall, Elias
+ * @author Callaway, Erin M
+ *
+ */
 public class ParseExceptionsTest
 {
 

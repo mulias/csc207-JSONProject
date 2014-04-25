@@ -725,7 +725,7 @@ public class JSONParser
         else
           str += val + ",";
       } // for (key)
-    
+
     str = str.substring(0, str.length() - 1) + "}";
     return str;
   } // toStr(HashMap)

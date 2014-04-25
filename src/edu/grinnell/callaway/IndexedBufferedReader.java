@@ -4,6 +4,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 
+/**
+ * 
+ * @author Shaun, Mataire
+ * @author Mulhall, Elias
+ * @author Callaway, Erin M
+ */
 public class IndexedBufferedReader
     extends BufferedReader
 {

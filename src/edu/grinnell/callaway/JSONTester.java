@@ -11,6 +11,12 @@ import java.util.Vector;
 
 import org.junit.Test;
 
+/**
+ * Simple tester for JSONParser
+ * @author Shaun, Mataire
+ * @author Mulhall, Elias
+ * @author Callaway, Erin M
+ */
 public class JSONTester
 {
   JSONParser parser = new JSONParser();
@@ -103,12 +109,13 @@ public class JSONTester
                  "{\"Pro\":{\"FName\":\"Sam\",\"LName\":\"Rebelsky\"},"
                      + "\"Number\":207,\"Department\":\"CSC\"}",
                  parser.toJSONString(parser.parseFromString("{\"Department\":\"CSC\","
-                                                     + " \"Number\":207, "
-                                                     + "\"Pro\":{\"LName\":\"Rebelsky\","
-                                                     + "\"FName\":\"Sam\"}}")));
+                                                            + " \"Number\":207, "
+                                                            + "\"Pro\":{\"LName\":\"Rebelsky\","
+                                                            + "\"FName\":\"Sam\"}}")));
     assertEquals("2. array", "[1,2,3]",
                  parser.toJSONString(parser.parseFromString("[1,2,3]")));
-    assertEquals("3. number", "34", parser.toJSONString(parser.parseFromString("34")));
+    assertEquals("3. number", "34",
+                 parser.toJSONString(parser.parseFromString("34")));
     assertEquals("4. decimal", "34.6",
                  parser.toJSONString(parser.parseFromString("34.6")));
     assertEquals("5. enum", "3E+32",
@@ -126,7 +133,7 @@ public class JSONTester
                  "{\"f\":{\"y\":2.9E+57,\"x\":\"it\"},"
                      + "\"e\":null,\"c\":\"The\",\"j\":[1,2]}",
                  parser.toJSONString(parser.parseFromString("{\"f\":{\"y\":29e56,\"x\":\"it\"},"
-                                                     + "\"e\":null,\"j\":[1,2],\"c\":\"The\"}")));
+                                                            + "\"e\":null,\"j\":[1,2],\"c\":\"The\"}")));
     assertEquals("11. unicode", "\"\u2300\"",
                  parser.toJSONString(parser.parseFromString("\"\\u2300\"")));
 
@@ -150,7 +157,7 @@ public class JSONTester
     assertEquals("path",
                  text,
                  parser.toJSONString(parser.parseFromFile(System.getProperty("user.dir")
-                                                     + "/JSONfile.json")));
+                                                          + "/JSONfile.json")));
   }
 
   /**
