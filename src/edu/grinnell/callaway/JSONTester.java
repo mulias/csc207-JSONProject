@@ -25,8 +25,13 @@ public class JSONTester
     assertEquals("2. false", "false", parser.toStr(false));
     assertEquals("3. num", "2.34", parser.toStr(2.34));
     assertEquals("4. enum", "2.3E35", parser.toStr(23e34));
-    assertEquals("5. null", "null", parser.toStr(null));
-    assertEquals("6. string", "\"a string\"", parser.toStr("a string"));
+    assertEquals("5. small enum", "0.0184", parser.toStr(18.4E-3));
+    assertEquals("6. +enum", "2.6E30", parser.toStr(2.6e+30));
+    assertEquals("7. -enum", "2.3E-35", parser.toStr(2.3E-35));
+    assertEquals("8. null", "null", parser.toStr(null));
+    assertEquals("9. string", "\"a string\"", parser.toStr("a string"));
+    assertEquals("10. object", "\"{}\"", parser.toStr("{}"));
+    assertEquals("11. array", "\"[]\"", parser.toStr("[]"));
   } // toStrTestVals
 
   /**
