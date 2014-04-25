@@ -16,12 +16,12 @@ public class JSONTester
   JSONParser parser = new JSONParser();
 
   /**
-   * Test the individual values with toStr
+   * Test the individual values with toJSONString()
    * 
    * @throws Exception
    */
   @Test
-  public void toStrTestVals()
+  public void toStringTestVals()
     throws Exception
   {
     assertEquals("1. true", "true", parser.toJSONString(true));
@@ -38,12 +38,12 @@ public class JSONTester
   } // toStrTestVals
 
   /**
-   * Test Objects and Vectors with toStr
+   * Test Objects and Vectors with toJSONString
    * 
    * @throws Exception
    */
   @Test
-  public void toStrTestObVec()
+  public void toStringTestObVec()
     throws Exception
   {
     HashMap<String, Object> hash = new HashMap<String, Object>(8);
@@ -58,7 +58,8 @@ public class JSONTester
     vector2.add(vector);
     vector2.add(2);
 
-    assertEquals("2. vector in vector", "[[1,2],2]", parser.toJSONString(vector2));
+    assertEquals("2. vector in vector", "[[1,2],2]",
+                 parser.toJSONString(vector2));
 
     HashMap<String, Object> hmap = new HashMap<String, Object>(3);
 
@@ -90,6 +91,10 @@ public class JSONTester
                  parser.toJSONString(hash));
   } // toStrTestObVec
 
+  /**
+   * Check the parser for errors.
+   * @throws Exception
+   */
   @Test
   public void parseTest()
     throws Exception
@@ -98,12 +103,13 @@ public class JSONTester
                  "{\"Pro\":{\"FName\":\"Sam\",\"LName\":\"Rebelsky\"},"
                      + "\"Number\":207,\"Department\":\"CSC\"}",
                  parser.toJSONString(parser.parseFromSource("{\"Department\":\"CSC\","
-                                                     + " \"Number\":207, "
-                                                     + "\"Pro\":{\"LName\":\"Rebelsky\","
-                                                     + "\"FName\":\"Sam\"}}")));
+                                                            + " \"Number\":207, "
+                                                            + "\"Pro\":{\"LName\":\"Rebelsky\","
+                                                            + "\"FName\":\"Sam\"}}")));
     assertEquals("2. array", "[1,2,3]",
                  parser.toJSONString(parser.parseFromSource("[1,2,3]")));
-    assertEquals("3. number", "34", parser.toJSONString(parser.parseFromSource("34")));
+    assertEquals("3. number", "34",
+                 parser.toJSONString(parser.parseFromSource("34")));
     assertEquals("4. decimal", "34.6",
                  parser.toJSONString(parser.parseFromSource("34.6")));
     assertEquals("5. enum", "3E+32",
@@ -121,22 +127,16 @@ public class JSONTester
                  "{\"f\":{\"y\":2.9E+57,\"x\":\"it\"},"
                      + "\"e\":null,\"c\":\"The\",\"j\":[1,2]}",
                  parser.toJSONString(parser.parseFromSource("{\"f\":{\"y\":29e56,\"x\":\"it\"},"
-                                                     + "\"e\":null,\"j\":[1,2],\"c\":\"The\"}")));
+                                                            + "\"e\":null,\"j\":[1,2],\"c\":\"The\"}")));
     assertEquals("11. unicode", "\"\u2300\"",
                  parser.toJSONString(parser.parseFromSource("\"\\u2300\"")));
 
   } // parseTest()
 
-  public String replaceMult(String text)
-  {
-    /* text = text.replace("\t", "");
-     text = text.replace(" ", "");
-     text = text.replace("\n", "");
-     text = text.replace("\n", "");*/
-    text = text.replaceAll("\\s+", "");
-    return text;
-  }
-
+  /**
+   * Check that the parser can take and successfully process input from a file.
+   * @throws Exception
+   */
   @Test
   public void pathTest()
     throws Exception
@@ -151,9 +151,13 @@ public class JSONTester
     assertEquals("path",
                  text,
                  parser.toJSONString(parser.parseFromSource(System.getProperty("user.dir")
-                                                     + "/JSONfile.json")));
-  }
+                                                            + "/JSONfile.json")));
+  } // pathTest()
 
+  /**
+   * Check to make sure that the parser can take and process links to JSON files on a website.
+   * @throws Exception
+   */
   @Test
   public void linkTest()
     throws Exception
@@ -164,5 +168,5 @@ public class JSONTester
     assertEquals("link",
                  text,
                  parser.toJSONString(parser.parseFromSource("http://grinnellappdev.com/tutorials/appdev_directory.json")));
-  }
+  } // linkTest()
 } // class JSONTester
