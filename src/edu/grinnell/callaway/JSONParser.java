@@ -1,5 +1,6 @@
 package edu.grinnell.callaway;
 
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -23,7 +24,51 @@ import java.util.Vector;
 public class JSONParser
 {
 
-  public static Object parseFromSource(Reader in)
+  /*
+   * CITATION:
+   * http://stackoverflow.com/questions/15842239/how-to-cast-a-string-to
+   * -an-url-in-java http://www.mkyong.com/java/how-to-get-url-content-in-java/
+   * http
+   * ://www.mkyong.com/java/how-to-read-file-from-java-bufferedreader-example/
+   * http://www.tutorialspoint.com/design_pattern/mvc_pattern.htm
+   */
+  public Object parseFromSource(String jsonSource)
+    throws Exception
+  {
+    // URL start with an "h", as in "http(s)..."
+    // file locations start with a "/", "/home/..."
+    // otherwise assume source is a json string
+    try
+      {
+        char firstChar = jsonSource.charAt(0);
+        if (firstChar == 'h')
+          {
+            // get URL
+            // open connection
+            URL url = new URL(jsonSource);
+            URLConnection connect = url.openConnection();
+            return parse(new InputStreamReader(connect.getInputStream()));
+          }
+        else if (firstChar == '/')
+          {
+            return parse(new FileReader(jsonSource));
+          }
+        else
+          {
+            return parse(new StringReader(jsonSource));
+          }
+      }
+    catch (MalformedURLException e)
+      {
+        throw new MalformedURLException("MalformedURLException: " + e);
+      }
+    catch (FileNotFoundException e)
+      {
+        throw new FileNotFoundException("");
+      }
+  }// parseFromSource(String)
+
+  public static Object parse(Reader in)
     throws Exception
   {
     IndexedBufferedReader buffer = new IndexedBufferedReader(in);
@@ -31,23 +76,6 @@ public class JSONParser
     buffer.close();
     return json;
   }// Object parse(String str)
-
-  /**
-   * parse JSON string to java Object
-   * 
-   * @param String
-   * @return Object
-   * @pre string is formated JSON code
-   * @post the JSON string has been translated into a java object
-   * @throws Exception
-   */
-  public static Object parse(String str)
-    throws Exception
-  {
-    IndexedBufferedReader buffer =
-        new IndexedBufferedReader(new StringReader(str));
-    return parse(buffer);
-  } // JSONValue parse(String)
 
   /**
    * parse JSON buffer to java Object
@@ -403,8 +431,9 @@ public class JSONParser
    * @return HashMap
    * @throws Exception
    */
-  public static HashMap<String, Object> parseObject(IndexedBufferedReader buffer)
-    throws Exception
+  public static HashMap<String, Object>
+    parseObject(IndexedBufferedReader buffer)
+      throws Exception
   {
     // save values in object to a HashMap
     // go through each char until closing '}' is found
@@ -524,11 +553,7 @@ public class JSONParser
     return '\n' + header + '(' + index + "): " + body + '\n'
            + buffer.currentLine() + '\n' + pointer;
   }
-  
-  
-  
-  
-  
+
   /**
    * Converts a given JSON value (in the form of a Java object) into a string
    * 
@@ -613,48 +638,5 @@ public class JSONParser
     str = str.substring(0, str.length() - 1) + "]";
     return str;
   } // vecToString(Vector)
-
-  /*
-   * /*
-  * CITATION:http://stackoverflow.com/questions/15842239/how-to-cast-a-string-to-an-url-in-java
-  *              http://www.mkyong.com/java/how-to-get-url-content-in-java/
-  *              http://www.mkyong.com/java/how-to-read-file-from-java-bufferedreader-example/
-  * http://www.tutorialspoint.com/design_pattern/mvc_pattern.htm
-  */
-
-  public Object handleJSONSource(String jsonSource)
-    throws Exception
-  {
-
-    //URL start with an "h", as in "http(s)..."
-    //file locations start with a "/", "/home/..."
-    char firstChar = jsonSource.charAt(0);
-    if (firstChar == 'h')
-      {
-        //get URL
-        //open connection
-        URL url = new URL(jsonSource);
-        URLConnection connect = url.openConnection();
-        try
-          {
-            return parseFromSource(new InputStreamReader(
-                                                         connect.getInputStream()));
-          }
-        catch (MalformedURLException e)
-          {
-            throw new MalformedURLException("MalformedURLException: " + e);
-          }
-      }
-    else if (firstChar == '/')
-      {
-        return parseFromSource(new FileReader(jsonSource));
-
-      }
-    else
-      {
-        throw new Exception(
-                            "Entered string is neither a URL nor a file location");
-      }
-  }//handleURL( String jsonURL)
 
 }// JSONParser
