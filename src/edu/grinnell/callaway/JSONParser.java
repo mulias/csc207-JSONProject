@@ -323,46 +323,75 @@ public class JSONParser
       {
         throw new Exception("");
       }
-    while ((c = buffer.read()) != '"')
+    while ((c = buffer.peek()) != '"')
       {
         switch (c)
           {
             case '\\':
-              // escape char for " or \
-              // json should support \/, but java doesn't
-              c = buffer.read();
-              if (c == '"' || c == '\\')
-                {
-                  builder.append((char) c);
-                } // if
-              else if (c == -1)
-                {
-                  throw new Exception(
-                                      jsonError("JSON STRING ERROR",
-                                                "no closing \" before end of input",
-                                                buffer));
-                }
-              else
-                {
-                  throw new Exception(jsonError("JSON STRING ERROR",
-                                                "invalid escape character \\"
-                                                    + (char) c, buffer, -1));
-                } // else
+              builder.append(parseEscapeChar(buffer));
               break;
             case -1:
               // reach end of json before ending string
               throw new Exception(
                                   jsonError("JSON STRING ERROR",
                                             "no closing \" before end of input",
-                                            buffer));
+                                            buffer, 1));
             default:
               // add all chars to string
-              builder.append((char) c);
+              builder.append((char) buffer.read());
               break;
           }// switch(C)
       }// while
+    buffer.read();
     return builder.toString();
   }// String parseString(IndexedBufferedReader)
+
+  public char parseEscapeChar(IndexedBufferedReader buffer)
+    throws Exception
+  {
+    int c = buffer.read();
+    if (c == -1)
+      {
+        throw new Exception(jsonError("JSON STRING ERROR",
+                                      "no closing \" before end of input",
+                                      buffer));
+      }
+    else if (c != '\\')
+      {
+        throw new Exception("");
+      }
+    else
+      {
+        c = buffer.read();
+        if (c == '"' || c == '\\' || c == '/')
+          {
+            return (char) c;
+          }
+        else if (c == 'u')
+          {
+            String unicode = "";
+            for(int i = 0; i < 4; i++)
+              {
+                char num = (char) buffer.read();
+                if (Character.isDigit(num) || Character.isAlphabetic(num))
+                  {
+                    unicode += num;
+                  }
+                else
+                  {
+                    throw new Exception("");
+                  }
+              }
+            return (char) Integer.parseInt(unicode, 16);
+          }
+        else
+          {
+            throw new Exception(jsonError("JSON STRING ERROR",
+                                          "invalid escape character \\"
+                                              + (char) c, buffer));
+          }
+      } // else
+  }
 
   /**
    * Parse Jason Array
@@ -431,9 +460,8 @@ public class JSONParser
    * @return HashMap
    * @throws Exception
    */
-  public HashMap<String, Object>
-    parseObject(IndexedBufferedReader buffer)
-      throws Exception
+  public HashMap<String, Object> parseObject(IndexedBufferedReader buffer)
+    throws Exception
   {
     // save values in object to a HashMap
     // go through each char until closing '}' is found
@@ -529,14 +557,14 @@ public class JSONParser
   }// parseObject(IndexedBufferedReader)
 
   public String jsonError(String header, String body,
-                                 IndexedBufferedReader buffer)
+                          IndexedBufferedReader buffer)
     throws IOException
   {
     return jsonError(header, body, buffer, 0);
   }
 
   public String jsonError(String header, String body,
-                                 IndexedBufferedReader buffer, int offset)
+                          IndexedBufferedReader buffer, int offset)
     throws IOException
   {
     // the line and character index of the error
