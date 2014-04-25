@@ -42,9 +42,9 @@ public class IndexedBufferedReader
   public IndexedBufferedReader(Reader stream) throws IOException
   {
     super(stream);
-    this.index = 0;
+    this.index = -1;
     this.line = 1;
-    this.markedIndex = 0;
+    this.markedIndex = -1;
     this.markedLine = 1;
     this.newline = false;
     this.currentLine = this.lineToString();
@@ -70,7 +70,7 @@ public class IndexedBufferedReader
     if (this.newline && read_val != -1)
       {
         this.line++;
-        this.index = 0;
+        this.index = -1;
         this.newline = false;
       }
     // if this is the end of a line, set flag that next char starts a new line
