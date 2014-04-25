@@ -595,7 +595,7 @@ public class JSONParser
    * @return
    */
   @SuppressWarnings("unchecked")
-  public String toStr(Object obj)
+  public String toJSONString(Object obj)
   {
     if (obj == null)
       return "null";
