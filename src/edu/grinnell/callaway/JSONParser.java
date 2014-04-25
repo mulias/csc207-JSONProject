@@ -12,6 +12,8 @@ import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Vector;
 
+import edu.grinnell.callaway.jsonsource.SourceControl;
+
 /**
  * Parse JSON string to java object(HashTable)
  * 
@@ -22,6 +24,10 @@ import java.util.Vector;
  */
 public class JSONParser
 {
+  
+  public Object parseFromInterface(){
+    return SourceControl.control();
+  }
 
   public Object parseFromSource(Reader in)
     throws Exception

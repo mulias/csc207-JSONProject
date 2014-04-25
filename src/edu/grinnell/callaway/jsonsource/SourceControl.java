@@ -1,5 +1,8 @@
 package edu.grinnell.callaway.jsonsource;
 
+import java.io.BufferedReader;
+import java.io.Reader;
+
 import edu.grinnell.callaway.JSONParser;
 
 /*
@@ -8,32 +11,37 @@ import edu.grinnell.callaway.JSONParser;
  */
 public class SourceControl
 {
- 
-  
-  SourceModel model;
+
   SourceView view;
 
-  public SourceControl(SourceModel model, SourceView view)
+  public SourceControl(SourceView view)
   {
-    this.model = model;
     this.view = view;
   }//SourceControl(SourceModel model, SourceView view)
-  
 
-  public Object control(){
-    Object result =null;
-     SourceView A = new SourceView.getInputType();
-     String inputSignal = A.parseSignal;
-     String value = A.JSONString;
-    if (inputSignal.equals("A")){
-      result=JSONParser.parse(value);
-    }
-    else if (inputSignal.equals("B")){
-      result= JSONParser.parseFromSource(value);
-    }
-    else{
-      throw new Exception ("wrong input");
-    }
-   return result;
+  public Object control()
+    throws Exception
+  {
+    JSONParser parser = new JSONParser();
+    Object result = null;
+    Reader read = null;
+    String string = null;
+    SourceView A = new SourceView(read, string);
+    A.getInputType();
+    String inputSignal = string;
+    Reader value = read;
+    if (inputSignal.equals("A"))
+      {
+        result = parser.parse((BufferedReader) value);////test this guy
+      }
+    else if (inputSignal.equals("B"))
+      {
+        result = parser.parseFromSource(value);
+      }
+    else
+      {
+        throw new Exception("wrong input");
+      }
+    return result;
   }//control() 
 }//SourceControl
