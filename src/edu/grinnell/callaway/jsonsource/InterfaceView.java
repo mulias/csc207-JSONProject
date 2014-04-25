@@ -47,7 +47,7 @@ public class InterfaceView
     BufferedReader in;
 
     pen.println("Please choose parse option");
-    pen.println("Parse options: (A) JSONString (B) File location");
+    pen.println("Parse options: (A) JSONString (B) File location (C) Web URL");
 
     in = new BufferedReader(new InputStreamReader(System.in));
     try

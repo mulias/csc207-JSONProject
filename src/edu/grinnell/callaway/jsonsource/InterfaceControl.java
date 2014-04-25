@@ -49,12 +49,17 @@ public class InterfaceControl
 
     if (inputSignal.equalsIgnoreCase("A"))
       {
-        result = parser.parseFromSource(packageString);
+        result = parser.parseFromString(packageString);
         pen.println("The JSON you entered was: ");
       } // if (A)
     else if (inputSignal.equalsIgnoreCase("B"))
       {
-        result = parser.parseFromSource(packageString);
+        result = parser.parseFromFile(packageString);
+        pen.println("The JSON in the file was: ");
+      } // else if (B)
+    else if (inputSignal.equalsIgnoreCase("C"))
+      {
+        result = parser.parseFromHTTP(packageString);
         pen.println("The JSON in the file was: ");
       } // else if (B)
     else
