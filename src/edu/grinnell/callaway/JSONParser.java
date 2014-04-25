@@ -242,10 +242,8 @@ public class JSONParser
       } // if
     else
       {
-        throw new Exception(
-                            jsonError("JSON NULL ERROR",
-                                      "precondtion not met, input not \"null\"",
-                                      buffer));
+        throw new Exception(jsonError("JSON NULL ERROR",
+                                      "expected input \"null\"", buffer));
       }// else
   } // Object parseNull(IndexedBufferedReader)
 
@@ -268,10 +266,8 @@ public class JSONParser
       } // if
     else
       {
-        throw new Exception(
-                            jsonError("JSON BOOLEAN ERROR",
-                                      "precondition not met, input not \"true\"",
-                                      buffer));
+        throw new Exception(jsonError("JSON BOOLEAN ERROR",
+                                      "expected input \"true\"", buffer));
       }// else
   }// parseTrue(IndexedBufferedReader)
 
@@ -294,10 +290,8 @@ public class JSONParser
       } // if
     else
       {
-        throw new Exception(
-                            jsonError("JSON BOOLEAN ERROR",
-                                      "precondition not met, value not \"false\"",
-                                      buffer));
+        throw new Exception(jsonError("JSON BOOLEAN ERROR",
+                                      "expected input \"false\"", buffer));
       } // else
   } // parseFalse(IndexedBufferedReader)
 
@@ -356,13 +350,7 @@ public class JSONParser
     throws Exception
   {
     int c = buffer.read();
-    if (c == -1)
-      {
-        throw new Exception(jsonError("JSON STRING ERROR",
-                                      "no closing \" before end of input",
-                                      buffer));
-      }
-    else if (c != '\\')
+    if (c != '\\')
       {
         throw new Exception("");
       }
@@ -389,6 +377,12 @@ public class JSONParser
                   }
               }
             return (char) Integer.parseInt(unicode, 16);
+          }
+        else if (c == -1)
+          {
+            throw new Exception(jsonError("JSON STRING ERROR",
+                                          "no closing \" before end of input",
+                                          buffer));
           }
         else
           {
