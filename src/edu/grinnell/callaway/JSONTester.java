@@ -62,7 +62,8 @@ public class JSONTester
     hmap.put("x", "it");
     hmap.put("y", 2.7e-4);
 
-    assertEquals("3. hashMap", "{\"y\":2.7E-4,\"x\":\"it\"}", parser.toStr(hmap));
+    assertEquals("3. hashMap", "{\"y\":2.7E-4,\"x\":\"it\"}",
+                 parser.toStr(hmap));
 
     vector.add(hmap);
 
@@ -94,22 +95,31 @@ public class JSONTester
                  "{\"Pro\":{\"FName\":\"Sam\",\"LName\":\"Rebelsky\"},"
                      + "\"Number\":207,\"Department\":\"CSC\"}",
                  parser.toStr(parser.parseFromSource("{\"Department\":\"CSC\","
-                                        + " \"Number\":207, "
-                                        + "\"Pro\":{\"LName\":\"Rebelsky\","
-                                        + "\"FName\":\"Sam\"}}")));
-    assertEquals("2. array", "[1,2,3]", parser.toStr(parser.parseFromSource("[1,2,3]")));
+                                                     + " \"Number\":207, "
+                                                     + "\"Pro\":{\"LName\":\"Rebelsky\","
+                                                     + "\"FName\":\"Sam\"}}")));
+    assertEquals("2. array", "[1,2,3]",
+                 parser.toStr(parser.parseFromSource("[1,2,3]")));
     assertEquals("3. number", "34", parser.toStr(parser.parseFromSource("34")));
-    assertEquals("4. decimal", "34.6", parser.toStr(parser.parseFromSource("34.6")));
-    assertEquals("5. enum", "3E+32", parser.toStr(parser.parseFromSource("3e32")));
-    assertEquals("6. null", "null", parser.toStr(parser.parseFromSource("null")));
-    assertEquals("7. true", "true", parser.toStr(parser.parseFromSource("true")));
-    assertEquals("8. false", "false", parser.toStr(parser.parseFromSource("false")));
-    assertEquals("9. negative", "-3.4", parser.toStr(parser.parseFromSource("-3.4")));
+    assertEquals("4. decimal", "34.6",
+                 parser.toStr(parser.parseFromSource("34.6")));
+    assertEquals("5. enum", "3E+32",
+                 parser.toStr(parser.parseFromSource("3e32")));
+    assertEquals("6. null", "null",
+                 parser.toStr(parser.parseFromSource("null")));
+    assertEquals("7. true", "true",
+                 parser.toStr(parser.parseFromSource("true")));
+    assertEquals("8. false", "false",
+                 parser.toStr(parser.parseFromSource("false")));
+    assertEquals("9. negative", "-3.4",
+                 parser.toStr(parser.parseFromSource("-3.4")));
 
     assertEquals("10. things within things",
                  "{\"f\":{\"y\":2.9E+57,\"x\":\"it\"},"
                      + "\"e\":null,\"c\":\"The\",\"j\":[1,2]}",
                  parser.toStr(parser.parseFromSource("{\"f\":{\"y\":29e56,\"x\":\"it\"},"
-                                        + "\"e\":null,\"j\":[1,2],\"c\":\"The\"}")));
+                                                     + "\"e\":null,\"j\":[1,2],\"c\":\"The\"}")));
+    assertEquals("unicode", "\"\u2300\"",
+                 parser.toStr(parser.parseFromSource("\"\\u2300\"")));
   } // parseTest()
 } // class JSONTester
