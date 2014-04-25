@@ -119,7 +119,21 @@ public class JSONTester
                      + "\"e\":null,\"c\":\"The\",\"j\":[1,2]}",
                  parser.toStr(parser.parseFromSource("{\"f\":{\"y\":29e56,\"x\":\"it\"},"
                                                      + "\"e\":null,\"j\":[1,2],\"c\":\"The\"}")));
-    assertEquals("unicode", "\"\u2300\"",
+    assertEquals("11. unicode", "\"\u2300\"",
                  parser.toStr(parser.parseFromSource("\"\\u2300\"")));
+
   } // parseTest()
+  
+  @Test
+  public void pathTest()
+      throws Exception
+    {
+      assertEquals("unicode",
+                   "{\"lastName\":\"Smith\"," + "\"age\":25,"
+                       + "\"height_cm\":167.64," + "\"firstName\":\"John\","
+                       + "\"isAlive\":true}",
+                   parser.toStr(parser.parseFromSource(System.getProperty("user.dir")
+                                                             .toString()
+                                                       + "/JSONfile.json")));
+    }
 } // class JSONTester
