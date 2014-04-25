@@ -53,7 +53,6 @@ public class IndexedBufferedReader
   public String lineToString()
     throws IOException
   {
-    System.out.println("make string");
     super.mark(2048);
     String str = readLine();
     super.reset();
@@ -70,7 +69,6 @@ public class IndexedBufferedReader
     // reset index/line variables and save the line to a string
     if (this.newline && read_val != -1)
       {
-        System.out.println("newline");
         this.line++;
         this.index = 0;
         this.newline = false;
@@ -78,7 +76,6 @@ public class IndexedBufferedReader
     // if this is the end of a line, set flag that next char starts a new line
     if (read_val == '\n')
       {
-        System.out.println("found a newline");
         this.index++;
         this.newline = true;
         this.currentLine = this.lineToString();
@@ -88,8 +85,6 @@ public class IndexedBufferedReader
       {
         this.index++;
       }
-    System.out.println("Line, index, char: " + this.line + " " + this.index
-                       + " " + (char) read_val);
     return read_val;
   }
 
