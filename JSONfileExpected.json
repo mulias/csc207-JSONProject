@@ -1,0 +1,1 @@
+{"lastName":"Smith","address":{"streetAddress":"21 2nd Street","postalCode":"10021-3100","state":"NY","city":"New York"},"age":25,"phoneNumbers":[{"number":"212 555-1234","type":"home"},{"number":"646 555-4567","type":"fax"}],"height_cm":167.64,"firstName":"John","isAlive":true}
