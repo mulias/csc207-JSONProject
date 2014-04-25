@@ -41,7 +41,7 @@ public class SourceModel
                                                          connect.getInputStream()));
             while ((fileLine = in.readLine()) != null)
               {
-                jsonOut = jsonOut + fileLine;
+                jsonOut = fileLine;
               }//while
             
             URL url = new URL(jsonSource);
@@ -67,7 +67,7 @@ public class SourceModel
         BufferedReader in = new BufferedReader(new FileReader(jsonSource));
         while ((fileLine = in.readLine()) != null)
           {
-            jsonOut = jsonOut + fileLine;
+            jsonOut = fileLine;
           }//while
         in.close();
         return jsonOut;
