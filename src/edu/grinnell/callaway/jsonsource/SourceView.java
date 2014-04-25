@@ -4,40 +4,42 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.Reader;
 
 public class SourceView
 {
-PrintWriter pen = new PrintWriter(System.out, true);
+  Reader JSONString;
+  String parseSignal;
 
-  public String getJSONSource()
-    throws IOException
-
+  public SourceView(Reader JSONString, String parseSignal)
   {
-    String jsonSource;
-    BufferedReader in;
-    
-    pen.println("URL example: http://yourDomain.com/file.json");
-    pen.println("file location example: /home/user/Documents/file.json");
-    pen.println("Please enter URL or file location:");
-    in = new BufferedReader(new InputStreamReader(System.in));
+    this.JSONString = JSONString;
+    this.parseSignal = parseSignal;
+  }
 
+  public SourceView getInputType()
+    throws IOException
+  {
+    PrintWriter pen = new PrintWriter(System.out, true);
+    SourceView JSONpackage = new SourceView(JSONString, parseSignal);
+    BufferedReader in;
+    pen.println("Please choose parse option");
+    pen.println("Parse options: (A) JSONString (B) File location");
+
+    in = new BufferedReader(new InputStreamReader(System.in));
     try
       {
-        jsonSource = in.readLine();
+        JSONpackage.parseSignal = in.readLine();
       }
     catch (IOException e)
       {
         throw new IOException("IOException: " + e);
       }
-    in.close();
-    return jsonSource;
-  }//String getURL()
+    pen.println("Please enter JSONString or the JSONString file location(URL or local file");
 
-  /*
-   * Signals that the content of the URL file has been sent the the Parser
-   */
-  public void finishSignal()
-  {
-    pen.println("Done");
-  }//finishSignal()
+    JSONpackage.JSONString = new BufferedReader(new InputStreamReader(System.in));
+    
+    in.close();
+    return JSONpackage;
+  }//String getURL()
 }//SourceView
