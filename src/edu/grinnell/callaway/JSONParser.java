@@ -635,7 +635,7 @@ public class JSONParser
   {
     // pass to jsonError method with offset of 0
     return jsonError(header, body, buffer, 0);
-  }
+  } // jsonError(String, String, IndexedBufferedReader)
 
   /**
    * Generate a json error message, specifying what kind of json value had 
@@ -666,7 +666,7 @@ public class JSONParser
     // full error string
     return '\n' + header + '(' + index + "): " + body + '\n'
            + buffer.currentLine() + '\n' + pointer;
-  }
+  } // jsonError(String, String, IndexedBufferedReader, int)
 
   /**
    * Converts a given JSON value (in the form of a Java object) into a string
@@ -728,7 +728,7 @@ public class JSONParser
 
     str = str.substring(0, str.length() - 1) + "}";
     return str;
-  } // toStr(HashMap)
+  } // objToString(HashMap)
 
   /**
    * Converts a vector into a string.
