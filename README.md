@@ -1,13 +1,13 @@
-csc207-JSONProject
-==================
+JAAAASON
+========
   
-Part II
+Until someone comes up with a better name, this is JAAAASON, the JSON parser.
 
-Better Documentation  
-Read from other sources <--- two sofar
+JAAAASON is a library for interacting with JSON data in Java. JSON is a data-interchange format for creating and saving information about data structures. It is best read about in detail at its official website, [here](http://www.json.org/).
 
-Add test (general + errors)  
-refactor some (use peek)  
-A short description of special features you decided to include and why you decided on those features.  
-An explanation of what criteria you used in deciding upon your license.  
-Comments on any other aspect of the project that you think I should know about.  
+This library can be used for parsing JSON into simple java objects, and returning the same objects back into JSON notation.
+
+In particular, JAAAASON features:
+* Good error checking - improperly formatted JSON input is very clearly marked and has helpful error messages
+* Full json support - including special unicode characters and parsing around excess whitespaces
+* Can take input from a user, file, string, or url source
