@@ -1,9 +1,9 @@
-JAAAASON
+PROJECT {"J":["S","O","N"]}
 ========
   
-Until someone comes up with a better name, this is JAAAASON, the JSON parser.
+Is this name any better?
 
-JAAAASON is a library for interacting with JSON data in Java. JSON is a data-interchange format for creating and saving information about data structures. It is best read about in detail at its official website, [here](http://www.json.org/).
+PROJECT {"J":["S","O","N"]} is a library for interacting with JSON data in Java. JSON is a data-interchange format for creating and saving information about data structures. It is best read about in detail at its official website, [here](http://www.json.org/).
 
 This library can be used for parsing JSON into simple java objects, and returning the same objects back into JSON notation.
 
