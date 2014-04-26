@@ -64,7 +64,7 @@ public class InterfaceControl
       {
         result = parser.parseFromHTTP(packageString);
         pen.println("The JSON in the file was: ");
-      } // else if (B)
+      } // else if (C)
     else
       throw new Exception("wrong input");
 
