@@ -87,19 +87,19 @@ public class IndexedBufferedReader
         this.line++;
         this.index = -1;
         this.newline = false;
-      }
+      } // if (newline)
     // if this is the end of a line, set flag that next char starts a new line
     if (read_val == '\n')
       {
         this.index++;
         this.newline = true;
         this.currentLine = this.lineToString();
-      }
+      } // else if (n)
     // if we're in the middle of a line, advance
     else if (read_val != -1)
       {
         this.index++;
-      }
+      } // else if (!=-1)
     return read_val;
   } // read()
 
@@ -131,9 +131,7 @@ public class IndexedBufferedReader
   {
     int i = 0;
     while (this.read() != -1)
-      {
-        i++;
-      }
+      i++;
     return i;
   } // skip(long)
 
@@ -159,7 +157,7 @@ public class IndexedBufferedReader
         line.append((char) c);
         pos++;
         c = super.read();
-      }
+      } // while
     return line.toString();
   } // readLine()
 
