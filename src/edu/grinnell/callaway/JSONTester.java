@@ -158,7 +158,7 @@ public class JSONTester
                  text,
                  parser.toJSONString(parser.parseFromFile(System.getProperty("user.dir")
                                                           + "/JSONfile.json")));
-  }
+  } // pathTest()
 
   /**
    * Check to make sure that the parser can take and process links to JSON files on a website.
@@ -174,5 +174,5 @@ public class JSONTester
     assertEquals("link",
                  text,
                  parser.toJSONString(parser.parseFromHTTP("http://grinnellappdev.com/tutorials/appdev_directory.json")));
-  }
+  } // linkTest()
 } // class JSONTester
